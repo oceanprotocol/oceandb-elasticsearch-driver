@@ -47,7 +47,6 @@ If you do not provide a configuration path, by default the config is expected in
 In the configuration we are going to specify the following parameters to
 
 ```yaml
-
     [oceandb]
 
     enabled=true            # In order to enable or not the plugin
@@ -55,11 +54,9 @@ In the configuration we are going to specify the following parameters to
     module.path=            # You can specify the location of your custom plugin.
     db.hostname=localhost   # Address of your Elasticsearch instance.
     db.port=9200            # Port of your Elasticsearch rest API.
-
-    db.username=user        # If you are using authentication, elasticsearch username.
-    db.password=password    # If you are using authentication, elasticsearch password.
-    db.index=test           # Elasticsearch index name
-
+    db.username=elastic     # If you are using authentication, elasticsearch username.
+    db.password=changeme    # If you are using authentication, elasticsearch password.
+    db.index=oceandb        # Elasticsearch index name
 ```
 
 Once you have defined this the only thing that you have to do it is use it:
