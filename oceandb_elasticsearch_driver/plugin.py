@@ -23,20 +23,80 @@ class Plugin(AbstractPlugin):
         return 'Elasticsearch'
 
     def write(self, obj, resource_id=None):
-        if self.driver._es.exists(index=self.driver._index, id=resource_id, doc_type='_doc') == False:
-            return self.driver._es.create(index=self.driver._index, id=resource_id, body=obj, doc_type='_doc', refresh='wait_for')
+        """Write obj in elasticsearch.
+        :param obj: value to be written in elasticsearch.
+        :param resource_id: id for the resource.
+        :return: id of the transaction.
+        """
+        self.logger.debug('elasticsearch::write::{}'.format(resource_id))
+        if resource_id is not None:
+            if self.driver._es.exists(
+                index=self.driver._index,
+                id=resource_id,
+                doc_type='_doc'
+            ):
+                raise ValueError("Resource \"{}\" already exists, use update instead".format(resource_id))
+        return self.driver._es.index(
+            index=self.driver._index,
+            id=resource_id,
+            body=obj,
+            doc_type='_doc',
+            refresh='wait_for'
+        )['_id']
 
     def read(self, resource_id):
-        return self.driver._es.get(index=self.driver._index, id=resource_id, doc_type='_doc')['_source']
+        """Read object in elasticsearch using the resource_id.
+        :param resource_id: id of the object to be read.
+        :return: object value from elasticsearch.
+        """
+        self.logger.debug('elasticsearch::read::{}'.format(resource_id))
+        return self.driver._es.get(
+            index=self.driver._index,
+            id=resource_id,
+            doc_type='_doc'
+        )['_source']
 
     def update(self, obj, resource_id):
-        return self.driver._es.index(index=self.driver._index, id=resource_id, body=obj, doc_type='_doc', refresh='wait_for')
+        """Update object in elasticsearch using the resource_id.
+        :param metadata: new metadata for the transaction.
+        :param resource_id: id of the object to be updated.
+        :return: id of the object.
+        """
+        self.logger.debug('elasticsearch::update::{}'.format(resource_id))
+        return self.driver._es.index(
+            index=self.driver._index,
+            id=resource_id,
+            body=obj,
+            doc_type='_doc',
+            refresh='wait_for'
+        )['_id']
 
     def delete(self, resource_id):
-        if self.driver._es.exists(index=self.driver._index, id=resource_id, doc_type='_doc'):
-            return self.driver._es.delete(index=self.driver._index, id=resource_id, doc_type='_doc')
+        """Delete an object from elasticsearch.
+        :param resource_id: id of the object to be deleted.
+        :return:
+        """
+        self.logger.debug('elasticsearch::delete::{}'.format(resource_id))
+        if self.driver._es.exists(
+            index=self.driver._index,
+            id=resource_id,
+            doc_type='_doc'
+        ) == False:
+            raise ValueError("Resource \"{}\" does not exists".format(resource_id))
+        return self.driver._es.delete(
+            index=self.driver._index,
+            id=resource_id,
+            doc_type='_doc'
+        )
 
-    def list(self, search_from=None, search_to=None, offset=None, limit=None):
+    def list(self, search_from=None, search_to=None, limit=None):
+        """List all the objects saved elasticsearch.
+         :param search_from: start offset of objects to return.
+         :param search_to: last offset of objects to return.
+         :param limit: max number of values to be returned.
+         :return: list with transactions.
+         """
+        self.logger.debug('elasticsearch::list')
         body = {
             'sort': [
                 { "_id" : "asc" },
@@ -50,6 +110,8 @@ class Plugin(AbstractPlugin):
             body['from'] = search_from
         if search_to:
             body['size'] = search_to-search_from
+        if limit:
+            body['size'] = limit
 
         page = self.driver._es.search(
             index = self.driver._index,
@@ -63,14 +125,17 @@ class Plugin(AbstractPlugin):
         return list
 
     def query(self, query_string):
-        print(query_string)
+        """Query elasticsearch for objects.
+        :param query_string: query in string format.
+        :return: list of objects that match the query.
+        """
+        self.logger.debug('elasticsearch::query::{}'.format(query_string))
         body = {
             'sort': [
                 { "_id" : "asc" },
             ]
         }
 
-        print(body)
         page = self.driver._es.search(
             index = self.driver._index,
             doc_type = '_doc',
