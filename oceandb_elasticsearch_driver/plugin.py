@@ -143,7 +143,7 @@ class Plugin(AbstractPlugin):
             q = query_string
         )
 
-        list = []
+        object_list = []
         for x in page['hits']['hits']:
-          list.append(x['_source'])
-        return list
+          object_list.append(x['_source'])
+        return object_list
