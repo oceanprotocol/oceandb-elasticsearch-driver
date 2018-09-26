@@ -119,10 +119,10 @@ class Plugin(AbstractPlugin):
             body = body
         )
 
-        list = []
+        object_list = []
         for x in page['hits']['hits']:
-          list.append(x['_source'])
-        return list
+          object_list.append(x['_source'])
+        return object_list
 
     def query(self, query_string):
         """Query elasticsearch for objects.

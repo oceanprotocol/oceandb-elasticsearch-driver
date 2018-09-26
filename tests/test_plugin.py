@@ -10,8 +10,8 @@ def test_plugin_type_is_es():
     assert es.type == 'Elasticsearch'
 
 def test_write_without_id():
-    id = es.write({"value": "test"})
-    es.delete(id)
+    object_id = es.write({"value": "test"})
+    es.delete(object_id)
 
 def test_write_error():
     with pytest.raises(
