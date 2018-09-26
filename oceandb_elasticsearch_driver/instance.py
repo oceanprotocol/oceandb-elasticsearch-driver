@@ -22,8 +22,6 @@ class ElasticsearchInstance(object):
             http_auth=(username, password),
             port=port,
         )
-        if self._es.indices.exists(index) == False:
-            self._es.indices.create(index)
 
     @property
     def instance(self):
