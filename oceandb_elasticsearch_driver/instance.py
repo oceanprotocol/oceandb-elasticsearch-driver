@@ -16,12 +16,11 @@ class ElasticsearchInstance(object):
         username = get_value('db.username', 'DB_USERNAME', None, config)
         password = get_value('db.password', 'DB_PASSWORD', None, config)
         index = get_value('db.index', 'DB_INDEX', 'oceandb', config)
-        ssl = get_value('db.ssl', 'DB_SSL', False, config)
-        verify_certs = get_value('db.verifyCerts', 'DB_VERIFY_CERTS', False, config)
-        ca_certs = get_value('db.caCertPath', 'DB_CA_CERTS', None, config)
-        client_key = get_value('db.clientKey', 'DB_CLIENT_KEY', None, config)
-        client_cert = get_value('db.clientCertPath', 'DB_CLIENT_CERT', None, config)
-
+        ssl = self.str_to_bool(get_value('db.ssl', 'DB_SSL', 'False', config))
+        verify_certs = self.str_to_bool(get_value('db.verify_certs', 'DB_VERIFY_CERTS', 'False', config))
+        ca_certs = get_value('db.ca_cert_path', 'DB_CA_CERTS', None, config)
+        client_key = get_value('db.client_key', 'DB_CLIENT_KEY', None, config)
+        client_cert = get_value('db.client_cert_path', 'DB_CLIENT_CERT', None, config)
         self._index = index
         self._es = Elasticsearch(
             [host],
@@ -33,7 +32,16 @@ class ElasticsearchInstance(object):
             client_cert=client_key,
             client_key=client_cert
         )
-
+        
     @property
     def instance(self):
         return self
+
+    def str_to_bool(self, s):
+        print("STRING-TO-BOOL : %s",s)
+        if s == 'True':
+            return True
+        elif s == 'False':
+            return False
+        else:
+         raise ValueError
