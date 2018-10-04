@@ -134,12 +134,20 @@ class Plugin(AbstractPlugin):
         :return: list of objects that match the query.
         """
         self.logger.debug('elasticsearch::query::{}'.format(search_model.query))
-        self._mapping_to_sort(search_model.sort.keys())
+        if search_model.sort is not None:
+            self._mapping_to_sort(search_model.sort.keys())
+            sort = self._sort_object(search_model.sort)
+        else:
+            sort = [{"_id": "asc"}]
+        if search_model.query == {}:
+            query = {'match_all': {}}
+        else:
+            query = {'term': search_model.query}
+
         body = {
-            'query': {
-                'term': search_model.query
-            },
-            'sort': self._sort_object(search_model.sort),
+            'query': query
+            ,
+            'sort': sort,
             'from': search_model.page * search_model.offset,
             'size': search_model.offset,
         }
@@ -155,24 +163,28 @@ class Plugin(AbstractPlugin):
             object_list.append(x['_source'])
         return object_list
 
-    def text_query(self, full_text_model: FullTextModel):
+    def text_query(self, search_model: FullTextModel):
         """Query elasticsearch for objects.
-        :param full_text_model: object of FullTextModel
+        :param search_model: object of FullTextModel
         :return: list of objects that match the query.
         """
-        self.logger.debug('elasticsearch::text_query::{}'.format(full_text_model.text))
-        self._mapping_to_sort(full_text_model.sort.keys())
+        self.logger.debug('elasticsearch::text_query::{}'.format(search_model.text))
+        if search_model.sort is not None:
+            self._mapping_to_sort(search_model.sort.keys())
+            sort = self._sort_object(search_model.sort)
+        else:
+            sort = [{"_id": "asc"}]
         body = {
-            'sort': self._sort_object(full_text_model.sort),
-            'from': full_text_model.page * full_text_model.offset,
-            'size': full_text_model.offset,
+            'sort': sort,
+            'from': search_model.page * search_model.offset,
+            'size': search_model.offset,
         }
 
         page = self.driver._es.search(
             index=self.driver._index,
             doc_type='_doc',
             body=body,
-            q=full_text_model.text + '?'
+            q=search_model.text
         )
 
         object_list = []

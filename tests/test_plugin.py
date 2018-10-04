@@ -86,13 +86,13 @@ def test_query():
 
 
 def test_full_text_query():
-    es.write({"value": "test1", "value8": 1}, 1)
-    es.write({"value": "test2", "value8": 2}, 2)
-    es.write({"value": "test3", "value8": 3}, 3)
-    es.write({"value": "foo4", "value8": 4}, 4)
-    es.write({"value": "foo5", "value8": 5}, 5)
-    es.write({"value": "test6", "value8": 6}, 6)
-    search_model = FullTextModel('foo', {'value': -1}, offset=3, page=0)
+    es.write({"value": "test1"}, 1)
+    es.write({"value": "test2"}, 2)
+    es.write({"value": "test3"}, 3)
+    es.write({"value": "foo4"}, 4)
+    es.write({"value": "foo5"}, 5)
+    es.write({"value": "test6"}, 6)
+    search_model = FullTextModel('foo?', {'value': 1}, offset=6, page=0)
     assert len(es.text_query(search_model)) == 2
     es.delete(1)
     es.delete(2)
