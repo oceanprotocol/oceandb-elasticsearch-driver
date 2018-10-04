@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 """Implementation of OceanDB plugin based in Elasticsearch"""
 import logging
 
