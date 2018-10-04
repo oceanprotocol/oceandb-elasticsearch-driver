@@ -212,4 +212,3 @@ class Plugin(AbstractPlugin):
             return o
         except Exception:
             raise Exception("Sort \"{}\" does not have a valid format.".format(sort))
->>>>>>> Stashed changes
