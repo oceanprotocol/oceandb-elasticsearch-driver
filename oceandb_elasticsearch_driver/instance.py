@@ -28,7 +28,7 @@ class ElasticsearchInstance(object):
         self._index = index
         self._es = Elasticsearch(
             [host],
-            # http_auth=(username, password),
+            http_auth=(username, password) if username is not None and password is not None else None,
             port=port,
             use_ssl=ssl,
             verify_certs=verify_certs,
