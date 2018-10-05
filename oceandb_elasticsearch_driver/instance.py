@@ -40,7 +40,8 @@ class ElasticsearchInstance(object):
     def instance(self):
         return self
 
-    def str_to_bool(self, s):
+    @staticmethod
+    def str_to_bool(s):
         print("STRING-TO-BOOL : %s", s)
         if s == 'True':
             return True
