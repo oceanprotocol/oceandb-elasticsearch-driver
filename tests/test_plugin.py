@@ -1,10 +1,9 @@
 import pytest
 from oceandb_driver_interface.search_model import QueryModel, FullTextModel
 
-from oceandb_elasticsearch_driver.plugin import Plugin
+from oceandb_driver_interface.oceandb import OceanDb
 
-# es = OceanDb('./tests/oceandb.ini').plugin
-es = Plugin('./tests/oceandb.ini')
+es = OceanDb('./tests/oceandb.ini').plugin
 
 
 def test_plugin_type_is_es():
