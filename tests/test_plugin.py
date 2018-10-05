@@ -1,7 +1,6 @@
 import pytest
-from oceandb_driver_interface.search_model import QueryModel, FullTextModel
-
 from oceandb_driver_interface.oceandb import OceanDb
+from oceandb_driver_interface.search_model import QueryModel, FullTextModel
 
 es = OceanDb('./tests/oceandb.ini').plugin
 
