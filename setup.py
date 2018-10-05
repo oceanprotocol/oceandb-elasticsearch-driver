@@ -11,7 +11,7 @@ with open('README.md') as readme_file:
 with open('CHANGELOG.md') as changelog_file:
     changelog = changelog_file.read()
 
-requirements = ['oceandb-driver-interface', ]
+requirements = ['oceandb-driver-interface', 'elasticsearch', ]
 
 setup_requirements = ['pytest-runner', ]
 
