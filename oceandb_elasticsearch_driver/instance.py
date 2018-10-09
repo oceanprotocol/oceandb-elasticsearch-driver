@@ -19,8 +19,8 @@ class ElasticsearchInstance(object):
         username = get_value('db.username', 'DB_USERNAME', None, config)
         password = get_value('db.password', 'DB_PASSWORD', None, config)
         index = get_value('db.index', 'DB_INDEX', 'oceandb', config)
-        ssl = self.str_to_bool(get_value('db.ssl', 'DB_SSL', 'False', config))
-        verify_certs = self.str_to_bool(get_value('db.verify_certs', 'DB_VERIFY_CERTS', 'False', config))
+        ssl = self.str_to_bool(get_value('db.ssl', 'DB_SSL', 'false', config))
+        verify_certs = self.str_to_bool(get_value('db.verify_certs', 'DB_VERIFY_CERTS', 'false', config))
         ca_certs = get_value('db.ca_cert_path', 'DB_CA_CERTS', None, config)
         client_key = get_value('db.client_key', 'DB_CLIENT_KEY', None, config)
         client_cert = get_value('db.client_cert_path', 'DB_CLIENT_CERT', None, config)
@@ -42,10 +42,9 @@ class ElasticsearchInstance(object):
 
     @staticmethod
     def str_to_bool(s):
-        print("STRING-TO-BOOL : %s", s)
-        if s == 'True':
+        if s == 'true':
             return True
-        elif s == 'False':
+        elif s == 'false':
             return False
         else:
             raise ValueError
