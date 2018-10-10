@@ -98,3 +98,21 @@ def test_full_text_query():
     es.delete(4)
     es.delete(5)
     es.delete(6)
+
+
+def test_full_text_query_tree():
+    es.write({"father": {"son": "test1"}}, 1)
+    es.write({"father": {"son": "test2"}}, 2)
+    es.write({"father": {"son": "test3"}}, 3)
+    es.write({"father": {"son": "foo4"}}, 4)
+    es.write({"father": {"son": "foo5"}}, 5)
+    es.write({"father": {"son": "test6"}}, 6)
+    search_model = FullTextModel('foo?', {'father.son': -1}, offset=6, page=0)
+    assert len(es.text_query(search_model)) == 2
+    assert es.text_query(search_model)[0]['father']['son'] == 'foo5'
+    es.delete(1)
+    es.delete(2)
+    es.delete(3)
+    es.delete(4)
+    es.delete(5)
+    es.delete(6)
