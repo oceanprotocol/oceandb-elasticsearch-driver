@@ -215,7 +215,7 @@ class Plugin(AbstractPlugin):
             o = []
             for i in sort.keys():
                 if self.driver._es.indices.get_field_mapping(i)[self.driver._index]['mappings']['_doc'][i]['mapping'][
-                    i]['type'] == 'text':
+                    i.split('.')[-1]]['type'] == 'text':
                     o.append({i + ".keyword": ('asc' if sort.get(i) == 1 else 'desc')}, )
                 else:
                     o.append({i: ('asc' if sort.get(i) == 1 else 'desc')}, )
