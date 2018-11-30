@@ -38,7 +38,7 @@ pytest-cov==2.5.1
 pytest-runner==2.11.1
 pytz==2018.4
 readme-renderer==21.0
-requests==2.19.1
+requests==2.20.1
 requests-toolbelt==0.8.0
 singletonify==0.1.2.0
 six==1.11.0
