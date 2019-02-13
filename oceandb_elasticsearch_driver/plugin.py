@@ -3,9 +3,9 @@ import logging
 
 from oceandb_driver_interface.plugin import AbstractPlugin
 from oceandb_driver_interface.search_model import FullTextModel, QueryModel
-from oceandb_elasticsearch_driver.utils import query_parser
 
 from oceandb_elasticsearch_driver.instance import get_database_instance
+from oceandb_elasticsearch_driver.utils import query_parser
 
 
 class Plugin(AbstractPlugin):
@@ -40,7 +40,8 @@ class Plugin(AbstractPlugin):
                     id=resource_id,
                     doc_type='_doc'
             ):
-                raise ValueError("Resource \"{}\" already exists, use update instead".format(resource_id))
+                raise ValueError(
+                    "Resource \"{}\" already exists, use update instead".format(resource_id))
         return self.driver._es.index(
             index=self.driver._index,
             id=resource_id,
@@ -216,7 +217,7 @@ class Plugin(AbstractPlugin):
             o = []
             for i in sort.keys():
                 if self.driver._es.indices.get_field_mapping(i)[self.driver._index]['mappings'][
-                '_doc'][i]['mapping'][i.split('.')[-1]]['type'] == 'text':
+                    '_doc'][i]['mapping'][i.split('.')[-1]]['type'] == 'text':
                     o.append({i + ".keyword": ('asc' if sort.get(i) == 1 else 'desc')}, )
                 else:
                     o.append({i: ('asc' if sort.get(i) == 1 else 'desc')}, )

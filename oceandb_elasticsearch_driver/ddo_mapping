@@ -2,13 +2,19 @@
   "mappings": {
     "_doc": {
       "properties": {
-        "@context": {"type": "text"},
-        "id": {"type": "text"},
-        "created":  {
-          "type":   "date",
+        "@context": {
+          "type": "text"
+        },
+        "id": {
+          "type": "text"
+        },
+        "created": {
+          "type": "date",
           "format": "date_time_no_millis"
         },
-        "service":    { "type": "text"  }
+        "service": {
+          "type": "text"
+        }
       }
     }
   }

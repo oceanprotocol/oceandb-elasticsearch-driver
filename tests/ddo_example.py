@@ -79,7 +79,8 @@ ddo_sample = {
                         {
                             "name": "assetId",
                             "type": "bytes32",
-                            "value":"cb36cf78d87f4ce4a784f17c2a4a694f19f3fbf05b814ac6b0b7197163888865"
+                            "value":
+                                "cb36cf78d87f4ce4a784f17c2a4a694f19f3fbf05b814ac6b0b7197163888865"
                         },
                         {
                             "name": "price",
@@ -243,7 +244,8 @@ ddo_sample = {
         },
         {
             "type": "Compute",
-            "serviceEndpoint": "http://mybrizo.org/api/v1/brizo/services/compute?pubKey=${pubKey}&agreementId={agreementId}&algo={algo}&container={container}"
+            "serviceEndpoint": "http://mybrizo.org/api/v1/brizo/services/compute?pubKey=${"
+                               "pubKey}&agreementId={agreementId}&algo={algo}&container={container}"
         },
         {
             "type": "Metadata",
@@ -265,7 +267,8 @@ ddo_sample = {
                     "workExample": "423432fsd,51.509865,-0.118092,2011-01-01T10:55:11+00:00,7.2,68",
                     "files": [
                         {
-                            "url": "https://testocnfiles.blob.core.windows.net/testfiles/testzkp.pdf",
+                            "url": "https://testocnfiles.blob.core.windows.net/testfiles/testzkp"
+                                   ".pdf",
                             "checksum": "efb2c764274b745f5fc37f97c6b0e761",
                             "contentLength": "4535431",
                             "resourceId": "access-log2018-02-13-15-17-29-18386C502CAEA932"
@@ -274,10 +277,14 @@ ddo_sample = {
                     "links": [
                         {
                             "type": "sample",
-                            "sample1": "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-daily/"
+                            "sample1":
+                                "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded"
+                                "-land-obs-daily/"
                         },
                         {
-                            "sample2": "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded-land-obs-averages-25km/"
+                            "sample2":
+                                "http://data.ceda.ac.uk/badc/ukcp09/data/gridded-land-obs/gridded"
+                                "-land-obs-averages-25km/"
                         },
                         {
                             "fieldsDescription": "http://data.ceda.ac.uk/badc/ukcp09/"

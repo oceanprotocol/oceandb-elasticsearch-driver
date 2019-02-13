@@ -20,7 +20,8 @@ class ElasticsearchInstance(object):
         password = get_value('db.password', 'DB_PASSWORD', None, config)
         index = get_value('db.index', 'DB_INDEX', 'oceandb', config)
         ssl = self.str_to_bool(get_value('db.ssl', 'DB_SSL', 'false', config))
-        verify_certs = self.str_to_bool(get_value('db.verify_certs', 'DB_VERIFY_CERTS', 'false', config))
+        verify_certs = self.str_to_bool(
+            get_value('db.verify_certs', 'DB_VERIFY_CERTS', 'false', config))
         ca_certs = get_value('db.ca_cert_path', 'DB_CA_CERTS', None, config)
         client_key = get_value('db.client_key', 'DB_CLIENT_KEY', None, config)
         client_cert = get_value('db.client_cert_path', 'DB_CLIENT_CERT', None, config)

@@ -177,6 +177,9 @@ def test_query_parser():
             {"match": {"service.type": "Metadata"}}
         ]
     }}
+    query = {'license': ['CC-BY'], 'created': ['lastYear']}
+    assert query_parser(query)['bool']['must'][0]['range']['created']['gte'].year == (
+            datetime.now() - timedelta(days=365)).year
     query = {'created': ['today', 'lastWeek', 'lastMonth', 'lastYear']}
     assert query_parser(query)['bool']['must'][0]['range']['created']['gte'].year == (
             datetime.now() - timedelta(days=365)).year
