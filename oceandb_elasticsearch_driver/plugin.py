@@ -2,7 +2,8 @@
 import logging
 
 from oceandb_driver_interface.plugin import AbstractPlugin
-from oceandb_driver_interface.search_model import QueryModel, FullTextModel
+from oceandb_driver_interface.search_model import FullTextModel, QueryModel
+from oceandb_elasticsearch_driver.utils import query_parser
 
 from oceandb_elasticsearch_driver.instance import get_database_instance
 
@@ -133,7 +134,7 @@ class Plugin(AbstractPlugin):
         :param search_model: object of QueryModel.
         :return: list of objects that match the query.
         """
-        self.logger.debug('elasticsearch::query::{}'.format(search_model.query))
+        self.logger.debug('elasticsearch::query::{}'.format(query_parser(search_model.query)))
         if search_model.sort is not None:
             self._mapping_to_sort(search_model.sort.keys())
             sort = self._sort_object(search_model.sort)
@@ -142,11 +143,10 @@ class Plugin(AbstractPlugin):
         if search_model.query == {}:
             query = {'match_all': {}}
         else:
-            query = {'term': search_model.query}
+            query = query_parser(search_model.query)
 
         body = {
-            'query': query
-            ,
+            'query': query,
             'sort': sort,
             'from': search_model.page * search_model.offset,
             'size': search_model.offset,
@@ -208,14 +208,15 @@ class Plugin(AbstractPlugin):
                         }
             """ % i
             if self.driver._es.indices.get_field_mapping(i)[self.driver._index]['mappings'] == {}:
-                self.driver._es.indices.put_mapping(index=self.driver._index, body=mapping, doc_type='_doc')
+                self.driver._es.indices.put_mapping(index=self.driver._index, body=mapping,
+                                                    doc_type='_doc')
 
     def _sort_object(self, sort):
         try:
             o = []
             for i in sort.keys():
-                if self.driver._es.indices.get_field_mapping(i)[self.driver._index]['mappings']['_doc'][i]['mapping'][
-                    i.split('.')[-1]]['type'] == 'text':
+                if self.driver._es.indices.get_field_mapping(i)[self.driver._index]['mappings'][
+                '_doc'][i]['mapping'][i.split('.')[-1]]['type'] == 'text':
                     o.append({i + ".keyword": ('asc' if sort.get(i) == 1 else 'desc')}, )
                 else:
                     o.append({i: ('asc' if sort.get(i) == 1 else 'desc')}, )

@@ -35,6 +35,7 @@ class ElasticsearchInstance(object):
             client_cert=client_key,
             client_key=client_cert
         )
+        # self._es.indices.create()
 
     @property
     def instance(self):
