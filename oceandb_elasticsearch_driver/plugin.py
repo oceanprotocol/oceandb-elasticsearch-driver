@@ -174,7 +174,7 @@ class Plugin(AbstractPlugin):
             self._mapping_to_sort(search_model.sort.keys())
             sort = self._sort_object(search_model.sort)
         else:
-            sort = [{"_id": "asc"}]
+            sort = [{"service.metadata.curation.rating": "asc"}]
         body = {
             'sort': sort,
             'from': search_model.page * search_model.offset,

@@ -71,23 +71,6 @@ def test_plugin_list():
     es.delete(6)
 
 
-# def test_query():
-#     es.write({"value": "test1"}, 1)
-#     es.write({"value": "test2"}, 2)
-#     es.write({"value": "test3"}, 3)
-#     es.write({"value": "foo"}, 4)
-#     es.write({"value": "foo"}, 5)
-#     es.write({"value": "test6"}, 6)
-#     search_model = QueryModel({"value": "foo"}, {"value": 1})
-#     assert len(es.query(search_model)) == 2
-#     es.delete(1)
-#     es.delete(2)
-#     es.delete(3)
-#     es.delete(4)
-#     es.delete(5)
-#     es.delete(6)
-
-
 def test_search_query():
     es.write(ddo_sample, ddo_sample['id'])
     search_model = QueryModel({'price': [0, 12]})
@@ -190,3 +173,15 @@ def test_query_parser():
     assert query_parser(query) == {"bool": {
         "should": [{"match": {"service.metadata.base.categories": "weather"}},
                    {"match": {"service.metadata.base.categories": "other"}}]}}
+
+
+def test_default_sort():
+    es.write(ddo_sample, ddo_sample['id'])
+    ddo_sample2 = ddo_sample.copy()
+    ddo_sample2['id'] = 'did:op:cb36cf78d87f4ce4a784f17c2a4a694f19f3fbf05b814ac6b0b7197163888864'
+    ddo_sample2['service'][2]['metadata']['curation']['rating'] = 0.99
+    es.write(ddo_sample2, ddo_sample2['id'])
+    search_model = QueryModel({'price': [0, 12]})
+    assert es.query(search_model)[0]['id'] == ddo_sample2['id']
+    es.delete(ddo_sample['id'])
+    es.delete(ddo_sample2['id'])
