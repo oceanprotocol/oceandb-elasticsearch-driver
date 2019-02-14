@@ -18,10 +18,7 @@
   - [Prerequisites](#prerequisites)
   - [Quickstart](#quickstart)
   - [Environment variables](#environment-variables)
-  - [Code style](#code-style)
-  - [Testing](#testing)
-  - [New Version](#new-version)
-  - [License](#license)
+  - [Queries](#queries)
 
 ---
 
@@ -79,6 +76,63 @@ When you want to instantiate an Oceandb plugin you can provide the next environm
 - **$DB_INDEX**
 - **$DB_USERNAME**
 - **$DB_PASSWORD**
+
+
+## Queries
+
+Currently we are supporting a list of queries predefined in order to improve the search:
+All this queries present a common format: 
+```query:{"name":[args]}```
+
+This queries are the following:
+- price
+    
+    Could receive one or two parameters. If you only pass one assumes that your query is going to start from 0 to your value.
+        
+    Next query:
+    `query:{"price":[0,10]}`
+    
+    It is transformed to:
+    `{"service.metadata.base.price":{"$gt": 0, "$lt": 10}}`
+        
+- license
+    
+    It is going to retrieve all the documents with license that you are passing in the parameters, 
+    if you do not pass any value retrieve all.
+        
+    `{"license":["Public domain", "CC-YB"]}`
+    
+- type
+    
+    It is going to check that the following service types are included in the ddo.
+    
+    `{"type":["Access", "Metadata"]}`
+
+- sample
+
+    Check that the metadata include a sample that contains a link of type sample. Do not take parameters.
+    
+    `{"sample":[]}`
+    
+- categories
+
+    Retrieve all the values that contain one of the specifies categories.
+    
+    `{"categories":["weather", "meteorology"]}`
+    
+- created
+
+    Retrieve all the values that has been created after a specified date. 
+    The parameters available are 'today', 'lastWeek', 'lastMonth', 'lastYear'. If you pass more than one take the bigger interval.
+    If you do not pass any parameter retrieve everything.
+    
+    `{"created":["today"]}`
+    
+- updatedFrequency
+
+    Retrieve all the values that contain one of the specifies updated frecuencies.
+    
+    `{"updatedFrequency":["monthly"]}`
 
 ## Code style
 
