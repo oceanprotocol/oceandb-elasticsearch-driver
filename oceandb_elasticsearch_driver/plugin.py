@@ -135,7 +135,8 @@ class Plugin(AbstractPlugin):
         :param search_model: object of QueryModel.
         :return: list of objects that match the query.
         """
-        self.logger.debug('elasticsearch::query::{}'.format(query_parser(search_model.query)))
+        query_parsed = query_parser(search_model.query)
+        self.logger.debug(f'elasticsearch::query::{query_parsed[0]}')
         if search_model.sort is not None:
             self._mapping_to_sort(search_model.sort.keys())
             sort = self._sort_object(search_model.sort)
@@ -144,7 +145,7 @@ class Plugin(AbstractPlugin):
         if search_model.query == {}:
             query = {'match_all': {}}
         else:
-            query = query_parser(search_model.query)
+            query = query_parsed[0]
 
         body = {
             'query': query,
@@ -156,7 +157,8 @@ class Plugin(AbstractPlugin):
         page = self.driver._es.search(
             index=self.driver._index,
             doc_type='_doc',
-            body=body
+            body=body,
+            q=query_parsed[1]
         )
 
         object_list = []

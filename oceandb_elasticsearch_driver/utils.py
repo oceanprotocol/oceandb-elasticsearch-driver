@@ -16,6 +16,7 @@ MATCH = 'match'
 
 def query_parser(query):
     query_result = {}
+    text = None
     for key in query.items():
         if 'price' in key:
             query_result = create_price_query(query, query_result)
@@ -33,10 +34,12 @@ def query_parser(query):
             query_result = create_created_query(query, query_result)
         elif 'sample' in key:
             query_result = create_query(['sample'], index.sample, query_result, AND, MATCH)
+        elif 'text' in key:
+            text = query['text'][0]
         else:
             logger.error('The key %s is not supported by OceanDB.' % key[0])
             raise Exception('The key %s is not supported by OceanDB.' % key[0])
-    return query_result
+    return query_result, text
 
 
 def create_query(value, index, query, operator, query_type):
