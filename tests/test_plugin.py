@@ -88,6 +88,8 @@ def test_search_query():
     assert len(es.query(search_model_6)) == 0
     search_model_7 = QueryModel({'created': []})
     assert es.query(search_model_7)[0]['id'] == ddo_sample['id']
+    search_model = QueryModel({'price': [0, 12], 'text': ['Weather']})
+    assert es.query(search_model)[0]['id'] == ddo_sample['id']
     es.delete(ddo_sample['id'])
 
 
@@ -128,30 +130,40 @@ def test_full_text_query_tree():
 
 def test_query_parser():
     query = {'price': [0, 10]}
-    assert query_parser(query) == {
-        "bool": {"must": [{"range": {"service.metadata.base.price": {"gte": 0, "lte": 10}}}]}}
+    assert query_parser(query) == ({
+                                       "bool": {"must": [{"range": {
+                                           "service.metadata.base.price": {"gte": 0,
+                                                                           "lte": 10}}}]}}, None)
     query = {'price': [15]}
-    assert query_parser(query) == {
-        "bool": {"must": [{"range": {"service.metadata.base.price": {"gte": 0, "lte": 15}}}]}}
+    assert query_parser(query) == ({
+                                       "bool": {"must": [{"range": {
+                                           "service.metadata.base.price": {"gte": 0,
+                                                                           "lte": 15}}}]}}, None)
     query = {'license': ['CC-BY']}
-    assert query_parser(query) == {
-        "bool": {"should": [{"match": {"service.metadata.base.license": "CC-BY"}}]}}
+    assert query_parser(query) == ({
+                                       "bool": {"should": [
+                                           {"match": {"service.metadata.base.license": "CC-BY"}}]}},
+                                   None)
     query = {'type': ['Access', 'Metadata']}
-    assert query_parser(query) == {"bool": {"must": [{"match": {"service.type": "Access"}},
-                                                     {"match": {"service.type": "Metadata"}}]}}
+    assert query_parser(query) == ({"bool": {"must": [{"match": {"service.type": "Access"}},
+                                                      {"match": {"service.type": "Metadata"}}]}},
+                                   None)
     query = {'price': [0, 10], 'type': ['Access', 'Metadata']}
-    assert query_parser(query) == {
-        "bool": {"must": [{"range": {"service.metadata.base.price": {"gte": 0, "lte": 10}}},
-                          {"match": {"service.type": "Access"}},
-                          {"match": {"service.type": "Metadata"}}]}}
+    assert query_parser(query) == ({
+                                       "bool": {"must": [{"range": {
+                                           "service.metadata.base.price": {"gte": 0, "lte": 10}}},
+                                                         {"match": {"service.type": "Access"}},
+                                                         {"match": {"service.type": "Metadata"}}]}},
+                                   None)
 
     query = {'license': []}
-    assert query_parser(query) == {}
+    assert query_parser(query) == ({}, None)
     query = {'license': [], 'type': ['Access', 'Metadata']}
-    assert query_parser(query) == {"bool": {"must": [{"match": {"service.type": "Access"}},
-                                                     {"match": {"service.type": "Metadata"}}]}}
+    assert query_parser(query) == ({"bool": {"must": [{"match": {"service.type": "Access"}},
+                                                      {"match": {"service.type": "Metadata"}}]}},
+                                   None)
     query = {'license': ['CC-BY'], 'type': ['Access', 'Metadata']}
-    assert query_parser(query) == {"bool": {
+    assert query_parser(query) == ({"bool": {
         "should": [
             {"match": {"service.metadata.base.license": "CC-BY"}}
         ],
@@ -159,20 +171,20 @@ def test_query_parser():
             {"match": {"service.type": "Access"}},
             {"match": {"service.type": "Metadata"}}
         ]
-    }}
+    }}, None)
     query = {'license': ['CC-BY'], 'created': ['lastYear']}
-    assert query_parser(query)['bool']['must'][0]['range']['created']['gte'].year == (
+    assert query_parser(query)[0]['bool']['must'][0]['range']['created']['gte'].year == (
             datetime.now() - timedelta(days=365)).year
     query = {'created': ['today', 'lastWeek', 'lastMonth', 'lastYear']}
-    assert query_parser(query)['bool']['must'][0]['range']['created']['gte'].year == (
+    assert query_parser(query)[0]['bool']['must'][0]['range']['created']['gte'].year == (
             datetime.now() - timedelta(days=365)).year
     query = {'created': ['no_valid']}
-    assert query_parser(query)['bool']['must'][0]['range']['created']['gte'].year == (
+    assert query_parser(query)[0]['bool']['must'][0]['range']['created']['gte'].year == (
             datetime.now() - timedelta(weeks=1000)).year
     query = {'categories': ['weather', 'other']}
-    assert query_parser(query) == {"bool": {
+    assert query_parser(query) == ({"bool": {
         "should": [{"match": {"service.metadata.base.categories": "weather"}},
-                   {"match": {"service.metadata.base.categories": "other"}}]}}
+                   {"match": {"service.metadata.base.categories": "other"}}]}}, None)
 
 
 def test_default_sort():
