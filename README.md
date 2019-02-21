@@ -134,6 +134,12 @@ This queries are the following:
     
     `{"updatedFrequency":["monthly"]}`
 
+- text
+    Retrieve all the values that match with the text sent.
+    
+    `{"text":["weather"]}`
+
+
 ## Code style
 
 The information about code style in python is documented in this two links [python-developer-guide](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/development/python-developer-guide.md)
