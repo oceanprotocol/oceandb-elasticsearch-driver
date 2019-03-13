@@ -1,3 +1,6 @@
+#  Copyright 2018 Ocean Protocol Foundation
+#  SPDX-License-Identifier: Apache-2.0
+
 price = "service.metadata.base.price"
 license = "service.metadata.base.license"
 sample = "service.metadata.base.links.type"
