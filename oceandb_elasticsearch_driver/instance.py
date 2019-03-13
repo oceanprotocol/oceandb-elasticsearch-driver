@@ -1,3 +1,6 @@
+#  Copyright 2018 Ocean Protocol Foundation
+#  SPDX-License-Identifier: Apache-2.0
+
 from elasticsearch import Elasticsearch
 from oceandb_driver_interface.utils import get_value
 

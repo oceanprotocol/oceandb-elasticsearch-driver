@@ -1,3 +1,6 @@
+#  Copyright 2018 Ocean Protocol Foundation
+#  SPDX-License-Identifier: Apache-2.0
+
 from datetime import datetime, timedelta
 
 import pytest
@@ -152,8 +155,8 @@ def test_query_parser():
     assert query_parser(query) == ({
                                        "bool": {"must": [{"range": {
                                            "service.metadata.base.price": {"gte": 0, "lte": 10}}},
-                                                         {"match": {"service.type": "Access"}},
-                                                         {"match": {"service.type": "Metadata"}}]}},
+                                           {"match": {"service.type": "Access"}},
+                                           {"match": {"service.type": "Metadata"}}]}},
                                    None)
 
     query = {'license': []}
