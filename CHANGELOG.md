@@ -1,6 +1,10 @@
 History
 =======
 
+0.0.5 (April 8th, 2019)
+--------------------------
+* Fix paging/offset issues.
+
 0.0.4 (February 21st, 2019)
 --------------------------
 * Support text query combine with custom queries
