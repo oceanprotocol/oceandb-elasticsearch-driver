@@ -153,7 +153,7 @@ class Plugin(AbstractPlugin):
         body = {
             'query': query,
             'sort': sort,
-            'from': search_model.page * search_model.offset,
+            'from': (search_model.page - 1) * search_model.offset,
             'size': search_model.offset,
         }
 
@@ -182,7 +182,7 @@ class Plugin(AbstractPlugin):
             sort = [{"service.metadata.curation.rating": "asc"}]
         body = {
             'sort': sort,
-            'from': search_model.page * search_model.offset,
+            'from': (search_model.page - 1) * search_model.offset,
             'size': search_model.offset,
         }
 
