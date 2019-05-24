@@ -1,6 +1,10 @@
 History
 =======
 
+0.0.6 (April 24th, 2019)
+-----------------------
+* Small changes to make it easy the pagination in aquarius.
+
 0.0.5 (April 8th, 2019)
 --------------------------
 * Fix paging/offset issues.
