@@ -77,22 +77,22 @@ def test_plugin_list():
 def test_search_query():
     es.write(ddo_sample, ddo_sample['id'])
     search_model = QueryModel({'price': [0, 12]})
-    assert es.query(search_model)[0]['id'] == ddo_sample['id']
+    assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
     search_model_2 = QueryModel({'license': ['CC-BY']})
-    assert es.query(search_model_2)[0]['id'] == ddo_sample['id']
+    assert es.query(search_model_2)[0][0]['id'] == ddo_sample['id']
     search_model_3 = QueryModel({'price': [0, 12], 'license': ['CC-BY']})
-    assert es.query(search_model_3)[0]['id'] == ddo_sample['id']
+    assert es.query(search_model_3)[0][0]['id'] == ddo_sample['id']
     search_model_4 = QueryModel(
         {'price': [0, 12], 'license': ['CC-BY'], 'type': ['Access', 'Metadata']})
-    assert es.query(search_model_4)[0]['id'] == ddo_sample['id']
+    assert es.query(search_model_4)[0][0]['id'] == ddo_sample['id']
     search_model_5 = QueryModel({'sample': []})
-    assert es.query(search_model_5)[0]['id'] == ddo_sample['id']
+    assert es.query(search_model_5)[0][0]['id'] == ddo_sample['id']
     search_model_6 = QueryModel({'created': ['today']})
-    assert len(es.query(search_model_6)) == 0
+    assert len(es.query(search_model_6)[0]) == 0
     search_model_7 = QueryModel({'created': []})
-    assert es.query(search_model_7)[0]['id'] == ddo_sample['id']
+    assert es.query(search_model_7)[0][0]['id'] == ddo_sample['id']
     search_model = QueryModel({'price': [0, 12], 'text': ['Weather']})
-    assert es.query(search_model)[0]['id'] == ddo_sample['id']
+    assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
     es.delete(ddo_sample['id'])
 
 
@@ -122,7 +122,7 @@ def test_full_text_query_tree():
     es.write({"father": {"son": "test6"}}, 6)
     search_model = FullTextModel('foo?', {'father.son': -1}, offset=6, page=1)
     assert len(es.text_query(search_model)) == 2
-    assert es.text_query(search_model)[0]['father']['son'] == 'foo5'
+    assert es.text_query(search_model)[0][0]['father']['son'] == 'foo5'
     es.delete(1)
     es.delete(2)
     es.delete(3)
@@ -197,6 +197,6 @@ def test_default_sort():
     ddo_sample2['service'][2]['metadata']['curation']['rating'] = 0.99
     es.write(ddo_sample2, ddo_sample2['id'])
     search_model = QueryModel({'price': [0, 12]})
-    assert es.query(search_model)[0]['id'] == ddo_sample2['id']
+    assert es.query(search_model)[0][0]['id'] == ddo_sample2['id']
     es.delete(ddo_sample['id'])
     es.delete(ddo_sample2['id'])

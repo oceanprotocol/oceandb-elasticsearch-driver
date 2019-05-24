@@ -138,6 +138,7 @@ class Plugin(AbstractPlugin):
         :param search_model: object of QueryModel.
         :return: list of objects that match the query.
         """
+        assert search_model.page >= 1, 'page value %s is invalid' % search_model.page
         query_parsed = query_parser(search_model.query)
         self.logger.debug(f'elasticsearch::query::{query_parsed[0]}')
         if search_model.sort is not None:
@@ -167,13 +168,14 @@ class Plugin(AbstractPlugin):
         object_list = []
         for x in page['hits']['hits']:
             object_list.append(x['_source'])
-        return object_list
+        return object_list, len(object_list)
 
     def text_query(self, search_model: FullTextModel):
         """Query elasticsearch for objects.
         :param search_model: object of FullTextModel
         :return: list of objects that match the query.
         """
+        assert search_model.page >= 1, 'page value %s is invalid' % search_model.page
         self.logger.debug('elasticsearch::text_query::{}'.format(search_model.text))
         if search_model.sort is not None:
             self._mapping_to_sort(search_model.sort.keys())
@@ -196,7 +198,7 @@ class Plugin(AbstractPlugin):
         object_list = []
         for x in page['hits']['hits']:
             object_list.append(x['_source'])
-        return object_list
+        return object_list, len(object_list)
 
     def _mapping_to_sort(self, keys):
         for i in keys:
