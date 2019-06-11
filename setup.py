@@ -36,7 +36,7 @@ setup(
     install_requires=requirements,
     license="Apache Software License 2.0",
     long_description=readme,
-    long_description_content_type='text/x-rst',
+    long_description_content_type="text/markdown",
     include_package_data=True,
     keywords='oceandb-elasticsearch-driver',
     name='oceandb-elasticsearch-driver',
