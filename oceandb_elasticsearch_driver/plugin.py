@@ -124,7 +124,6 @@ class Plugin(AbstractPlugin):
 
         page = self.driver._es.search(
             index=self.driver._index,
-            doc_type='_doc',
             body=body
         )
 
@@ -160,7 +159,6 @@ class Plugin(AbstractPlugin):
 
         page = self.driver._es.search(
             index=self.driver._index,
-            doc_type='_doc',
             body=body,
             q=query_parsed[1]
         )
@@ -190,7 +188,6 @@ class Plugin(AbstractPlugin):
 
         page = self.driver._es.search(
             index=self.driver._index,
-            doc_type='_doc',
             body=body,
             q=search_model.text
         )

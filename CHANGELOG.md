@@ -1,6 +1,11 @@
 History
 =======
 
+0.1.0 (Jun 11th, 2019)
+-----------------------
+* Aligned with the mongodb plugin.
+* Issue listing doc_type.
+
 0.0.6 (April 24th, 2019)
 -----------------------
 * Small changes to make it easy the pagination in aquarius.
