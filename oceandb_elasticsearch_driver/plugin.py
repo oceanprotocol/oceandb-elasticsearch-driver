@@ -166,7 +166,7 @@ class Plugin(AbstractPlugin):
         object_list = []
         for x in page['hits']['hits']:
             object_list.append(x['_source'])
-        return object_list, len(object_list)
+        return object_list, page['hits']['total']
 
     def text_query(self, search_model: FullTextModel):
         """Query elasticsearch for objects.
@@ -195,7 +195,7 @@ class Plugin(AbstractPlugin):
         object_list = []
         for x in page['hits']['hits']:
             object_list.append(x['_source'])
-        return object_list, len(object_list)
+        return object_list, page['hits']['total']
 
     def _mapping_to_sort(self, keys):
         for i in keys:
