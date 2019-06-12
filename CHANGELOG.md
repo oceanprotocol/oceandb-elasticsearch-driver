@@ -1,6 +1,10 @@
 History
 =======
 
+0.1.1 (Jun 11th, 2019)
+-----------------------
+* Fix bug in the total hits in queries.
+
 0.1.0 (Jun 11th, 2019)
 -----------------------
 * Aligned with the mongodb plugin.
