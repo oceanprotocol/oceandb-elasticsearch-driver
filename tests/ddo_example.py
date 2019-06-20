@@ -260,6 +260,7 @@ ddo_sample = {
                     "description": "Weather information of UK including temperature and humidity",
                     "size": "3.1gb",
                     "dateCreated": datetime.strptime("2016-02-08T16:02:20Z", '%Y-%m-%dT%H:%M:%SZ'),
+                    "datePublished": datetime.strptime("2016-02-08T16:02:20Z", '%Y-%m-%dT%H:%M:%SZ'),
                     "author": "Met Office",
                     "license": "CC-BY",
                     "copyrightHolder": "Met Office",
