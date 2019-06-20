@@ -87,10 +87,14 @@ def test_search_query():
     assert es.query(search_model_4)[0][0]['id'] == ddo_sample['id']
     search_model_5 = QueryModel({'sample': []})
     assert es.query(search_model_5)[0][0]['id'] == ddo_sample['id']
-    search_model_6 = QueryModel({'created': ['today']})
-    assert len(es.query(search_model_6)[0]) == 0
-    search_model_7 = QueryModel({'created': []})
+    search_model_6 = QueryModel({'created': ['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z']})
+    assert len(es.query(search_model_6)[0]) == 1
+    search_model_7 = QueryModel({'dateCreated': ['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z']})
     assert es.query(search_model_7)[0][0]['id'] == ddo_sample['id']
+    search_model_8 = QueryModel({'datePublished': ['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z']})
+    assert len(es.query(search_model_8)[0]) == 1
+    search_model_9 = QueryModel({'datePublished': ['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z'], 'text':['Weather']})
+    assert len(es.query(search_model_9)[0]) == 1
     search_model = QueryModel({'price': [0, 12], 'text': ['Weather']})
     assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
     es.delete(ddo_sample['id'])
@@ -175,15 +179,10 @@ def test_query_parser():
             {"match": {"service.type": "Metadata"}}
         ]
     }}, None)
-    query = {'license': ['CC-BY'], 'created': ['lastYear']}
-    assert query_parser(query)[0]['bool']['must'][0]['range']['created']['gte'].year == (
-            datetime.now() - timedelta(days=365)).year
-    query = {'created': ['today', 'lastWeek', 'lastMonth', 'lastYear']}
-    assert query_parser(query)[0]['bool']['must'][0]['range']['created']['gte'].year == (
-            datetime.now() - timedelta(days=365)).year
-    query = {'created': ['no_valid']}
-    assert query_parser(query)[0]['bool']['must'][0]['range']['created']['gte'].year == (
-            datetime.now() - timedelta(weeks=1000)).year
+    query = {'license': ['CC-BY'], 'created': ['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z']}
+    assert query_parser(query)[0]['bool']['must'][0]['range']['created']['gte'].year == 2016
+    query = {'datePublished': ['2017-02-07T16:02:20Z', '2017-02-09T16:02:20Z']}
+    assert query_parser(query)[0]['bool']['must'][0]['range']['service.metadata.base.datePublished']['gte'].year == 2017
     query = {'categories': ['weather', 'other']}
     assert query_parser(query) == ({"bool": {
         "should": [{"match": {"service.metadata.base.categories": "weather"}},

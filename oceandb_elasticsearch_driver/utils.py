@@ -2,7 +2,7 @@
 #  SPDX-License-Identifier: Apache-2.0
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import oceandb_elasticsearch_driver.indexes as index
 
@@ -37,7 +37,11 @@ def query_parser(query):
             query_result = create_query(query['updateFrequency'], index.updated_frequency,
                                         query_result, OR, MATCH)
         elif 'created' in key:
-            query_result = create_created_query(query, query_result)
+            query_result = create_created_query(query, query_result, 'created')
+        elif 'dateCreated' in key:
+            query_result = create_created_query(query, query_result, 'dateCreated')
+        elif 'datePublished' in key:
+            query_result = create_created_query(query, query_result, 'datePublished')
         elif 'sample' in key:
             query_result = create_query(['sample'], index.sample, query_result, AND, MATCH)
         elif 'text' in key:
@@ -76,18 +80,29 @@ def create_price_query(query, query_result):
     return query_result
 
 
-def create_created_query(query, query_result):
-    now = datetime.now() - timedelta(weeks=1000)
-    for values in query['created']:
-        if values == 'today':
-            now = datetime.now() - timedelta(days=1)
-        elif values == 'lastWeek':
-            now = datetime.now() - timedelta(days=7)
-        elif values == 'lastMonth':
-            now = datetime.now() - timedelta(days=30)
-        elif values == 'lastYear':
-            now = datetime.now() - timedelta(days=365)
-        else:
-            logger.info('The key %s is not supported in the created query' % values)
-    query_result = create_query([{GT: now}], index.created, query_result, AND, RANGE)
+def create_created_query(query, query_result, field):
+    if query[field][0] is None or query[field][1] is None:
+        logger.warning("You should provide two dates in your query.")
+    if query[field][0] > query[field][1]:
+        logger.warning("Your second date is smaller that the first.")
+    if field == 'created':
+        query_result = create_query([{GT: datetime.strptime(query[field][0], '%Y-%m-%dT%H:%M:%SZ'),
+                                      LT: datetime.strptime(query[field][1],
+                                                            '%Y-%m-%dT%H:%M:%SZ')}], index.created,
+                                    query_result, AND, RANGE)
+    if field == 'dateCreated':
+        query_result = create_query([{GT: datetime.strptime(query[field][0], '%Y-%m-%dT%H:%M:%SZ'),
+                                      LT: datetime.strptime(query[field][1],
+                                                            '%Y-%m-%dT%H:%M:%SZ')}],
+                                    index.dateCreated,
+                                    query_result,
+                                    AND, RANGE)
+    if field == 'datePublished':
+        query_result = create_query([{GT: datetime.strptime(query[field][0], '%Y-%m-%dT%H:%M:%SZ'),
+                                      LT: datetime.strptime(query[field][1],
+                                                            '%Y-%m-%dT%H:%M:%SZ')}],
+                                    index.datePublished, query_result,
+                                    AND, RANGE)
+    else:
+        logger.info('The key %s is not supported in the created query')
     return query_result

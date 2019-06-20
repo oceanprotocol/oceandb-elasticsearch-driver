@@ -1,6 +1,10 @@
 History
 =======
 
+0.1.2 (Jun 20th, 2019)
+-----------------------
+* Add datePublished and dateCreated queries.
+
 0.1.1 (Jun 11th, 2019)
 -----------------------
 * Fix bug in the total hits in queries.
