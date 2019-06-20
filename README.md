@@ -122,11 +122,21 @@ This queries are the following:
     
 - created
 
-    Retrieve all the values that has been created after a specified date. 
-    The parameters available are 'today', 'lastWeek', 'lastMonth', 'lastYear'. If you pass more than one take the bigger interval.
-    If you do not pass any parameter retrieve everything.
+    Retrieve all the values that has been created between two dates. 
+
+    `{"created":['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z']}`
     
-    `{"created":["today"]}`
+- dateCreated
+
+    Retrieve all the values that has been created between two dates. 
+    
+    `{"dateCreated":['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z']}`
+    
+- datePublished
+
+    Retrieve all the values that has been published between two dates. 
+    
+    `{"datePublished":['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z']}`
     
 - updatedFrequency
 
