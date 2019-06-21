@@ -1,8 +1,6 @@
 #  Copyright 2018 Ocean Protocol Foundation
 #  SPDX-License-Identifier: Apache-2.0
 
-from datetime import datetime, timedelta
-
 import pytest
 from oceandb_driver_interface.oceandb import OceanDb
 from oceandb_driver_interface.search_model import FullTextModel, QueryModel
@@ -93,8 +91,11 @@ def test_search_query():
     assert es.query(search_model_7)[0][0]['id'] == ddo_sample['id']
     search_model_8 = QueryModel({'datePublished': ['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z']})
     assert len(es.query(search_model_8)[0]) == 1
-    search_model_9 = QueryModel({'datePublished': ['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z'], 'text':['Weather']})
+    search_model_9 = QueryModel(
+        {'datePublished': ['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z'], 'text': ['Weather']})
     assert len(es.query(search_model_9)[0]) == 1
+    search_model_10 = QueryModel({'text': ['Weather']})
+    assert len(es.query(search_model_10)[0]) == 1
     search_model = QueryModel({'price': [0, 12], 'text': ['Weather']})
     assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
     es.delete(ddo_sample['id'])
@@ -182,7 +183,9 @@ def test_query_parser():
     query = {'license': ['CC-BY'], 'created': ['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z']}
     assert query_parser(query)[0]['bool']['must'][0]['range']['created']['gte'].year == 2016
     query = {'datePublished': ['2017-02-07T16:02:20Z', '2017-02-09T16:02:20Z']}
-    assert query_parser(query)[0]['bool']['must'][0]['range']['service.metadata.base.datePublished']['gte'].year == 2017
+    assert \
+    query_parser(query)[0]['bool']['must'][0]['range']['service.metadata.base.datePublished'][
+        'gte'].year == 2017
     query = {'categories': ['weather', 'other']}
     assert query_parser(query) == ({"bool": {
         "should": [{"match": {"service.metadata.base.categories": "weather"}},
