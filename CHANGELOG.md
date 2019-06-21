@@ -1,6 +1,10 @@
 History
 =======
 
+0.1.3 (Jun 21st, 2019)
+-----------------------
+* Fix bug in text query.
+
 0.1.2 (Jun 20th, 2019)
 -----------------------
 * Add datePublished and dateCreated queries.

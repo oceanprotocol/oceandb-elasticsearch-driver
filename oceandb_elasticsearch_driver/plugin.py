@@ -151,11 +151,13 @@ class Plugin(AbstractPlugin):
             query = query_parsed[0]
 
         body = {
-            'query': query,
             'sort': sort,
             'from': (search_model.page - 1) * search_model.offset,
             'size': search_model.offset,
         }
+        if query != {}:
+            body['query'] = query
+
 
         page = self.driver._es.search(
             index=self.driver._index,
