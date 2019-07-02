@@ -1,6 +1,11 @@
 History
 =======
 
+0.1.4 (Jul 2nd, 2019)
+-----------------------
+* Retry connection when elastic is not up.
+* Push mapping when elastic start.
+
 0.1.3 (Jun 21st, 2019)
 -----------------------
 * Fix bug in text query.
