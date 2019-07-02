@@ -3,6 +3,9 @@
 
 from elasticsearch import Elasticsearch
 from oceandb_driver_interface.utils import get_value
+from oceandb_elasticsearch_driver.mapping import mapping
+import logging
+import time
 
 _DB_INSTANCE = None
 
@@ -29,17 +32,24 @@ class ElasticsearchInstance(object):
         client_key = get_value('db.client_key', 'DB_CLIENT_KEY', None, config)
         client_cert = get_value('db.client_cert_path', 'DB_CLIENT_CERT', None, config)
         self._index = index
-        self._es = Elasticsearch(
-            [host],
-            http_auth=(username, password),
-            port=port,
-            use_ssl=ssl,
-            verify_certs=verify_certs,
-            ca_certs=ca_certs,
-            client_cert=client_key,
-            client_key=client_cert
-        )
-        # self._es.indices.create()
+        try:
+            self._es = Elasticsearch(
+                [host],
+                http_auth=(username, password),
+                port=port,
+                use_ssl=ssl,
+                verify_certs=verify_certs,
+                ca_certs=ca_certs,
+                client_cert=client_key,
+                client_key=client_cert
+            )
+            while self._es.ping()==False:
+                logging.info("Trying to connect...")
+                time.sleep(5)
+        except Exception as e:
+            logging.info("Trying to connect...")
+        self._es.indices.create(index=config.get('oceandb', 'db.index'), ignore=400,
+                                       body=mapping)
 
     @property
     def instance(self):
