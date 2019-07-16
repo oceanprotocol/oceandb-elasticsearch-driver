@@ -10,6 +10,6 @@ created = "created"
 datePublished = "service.metadata.base.datePublished"
 dateCreated = "service.metadata.base.dateCreated"
 updated_frequency = "service.metadata.additionalInformation.updateFrequency"
-service_type = "service.type"
+service_type = "service.metadata.base.type"
 
 list_indexes = [price, license, sample, categories, created, updated_frequency, service_type]
