@@ -1,6 +1,10 @@
 History
 =======
 
+0.1.5 (Jul 16th, 2019)
+-----------------------
+ * Fix search by type.
+
 0.1.4 (Jul 2nd, 2019)
 -----------------------
 * Retry connection when elastic is not up.
