@@ -48,8 +48,7 @@ class ElasticsearchInstance(object):
                 time.sleep(5)
         except Exception as e:
             logging.info("Trying to connect...")
-        self._es.indices.create(index=config.get('oceandb', 'db.index'), ignore=400,
-                                       body=mapping)
+        self._es.indices.create(index=index, ignore=400, body=mapping)
 
     @property
     def instance(self):
