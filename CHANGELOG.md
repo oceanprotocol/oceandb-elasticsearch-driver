@@ -1,7 +1,7 @@
 History
 =======
 
-0.1.6 (Aug 13th, 2019)
+0.2.0 (Aug 13th, 2019)
 ----------------------
  * Update to the new DDO structure with main instead of base.
 
