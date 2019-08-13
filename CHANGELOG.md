@@ -1,6 +1,10 @@
 History
 =======
 
+0.1.6 (Aug 13th, 2019)
+----------------------
+ * Update to the new DDO structure with main instead of base.
+
 0.1.5 (Jul 16th, 2019)
 -----------------------
  * Fix search by type.
