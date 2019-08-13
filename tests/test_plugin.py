@@ -140,63 +140,63 @@ def test_query_parser():
     query = {'price': [0, 10]}
     assert query_parser(query) == ({
                                        "bool": {"must": [{"range": {
-                                           "service.metadata.base.price": {"gte": 0,
+                                           "service.attributes.main.price": {"gte": 0,
                                                                            "lte": 10}}}]}}, None)
     query = {'price': [15]}
     assert query_parser(query) == ({
                                        "bool": {"must": [{"range": {
-                                           "service.metadata.base.price": {"gte": 0,
+                                           "service.attributes.main.price": {"gte": 0,
                                                                            "lte": 15}}}]}}, None)
     query = {'license': ['CC-BY']}
     assert query_parser(query) == ({
                                        "bool": {"should": [
-                                           {"match": {"service.metadata.base.license": "CC-BY"}}]}},
+                                           {"match": {"service.attributes.main.license": "CC-BY"}}]}},
                                    None)
     query = {'type': ['Access', 'Metadata']}
-    assert query_parser(query) == ({"bool": {"must": [{"match": {"service.metadata.base.type": "Access"}},
-                                                      {"match": {"service.metadata.base.type": "Metadata"}}]}},
+    assert query_parser(query) == ({"bool": {"must": [{"match": {"service.attributes.main.type": "Access"}},
+                                                      {"match": {"service.attributes.main.type": "Metadata"}}]}},
                                    None)
     query = {'price': [0, 10], 'type': ['Access', 'Metadata']}
     assert query_parser(query) == ({
                                        "bool": {"must": [{"range": {
-                                           "service.metadata.base.price": {"gte": 0, "lte": 10}}},
-                                           {"match": {"service.metadata.base.type": "Access"}},
-                                           {"match": {"service.metadata.base.type": "Metadata"}}]}},
+                                           "service.attributes.main.price": {"gte": 0, "lte": 10}}},
+                                           {"match": {"service.attributes.main.type": "Access"}},
+                                           {"match": {"service.attributes.main.type": "Metadata"}}]}},
                                    None)
 
     query = {'license': []}
     assert query_parser(query) == ({}, None)
     query = {'license': [], 'type': ['Access', 'Metadata']}
-    assert query_parser(query) == ({"bool": {"must": [{"match": {"service.metadata.base.type": "Access"}},
-                                                      {"match": {"service.metadata.base.type": "Metadata"}}]}},
+    assert query_parser(query) == ({"bool": {"must": [{"match": {"service.attributes.main.type": "Access"}},
+                                                      {"match": {"service.attributes.main.type": "Metadata"}}]}},
                                    None)
     query = {'license': ['CC-BY'], 'type': ['Access', 'Metadata']}
     assert query_parser(query) == ({"bool": {
         "should": [
-            {"match": {"service.metadata.base.license": "CC-BY"}}
+            {"match": {"service.attributes.main.license": "CC-BY"}}
         ],
         "must": [
-            {"match": {"service.metadata.base.type": "Access"}},
-            {"match": {"service.metadata.base.type": "Metadata"}}
+            {"match": {"service.attributes.main.type": "Access"}},
+            {"match": {"service.attributes.main.type": "Metadata"}}
         ]
     }}, None)
     query = {'license': ['CC-BY'], 'created': ['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z']}
     assert query_parser(query)[0]['bool']['must'][0]['range']['created']['gte'].year == 2016
     query = {'datePublished': ['2017-02-07T16:02:20Z', '2017-02-09T16:02:20Z']}
     assert \
-    query_parser(query)[0]['bool']['must'][0]['range']['service.metadata.base.datePublished'][
+    query_parser(query)[0]['bool']['must'][0]['range']['service.attributes.main.datePublished'][
         'gte'].year == 2017
     query = {'categories': ['weather', 'other']}
     assert query_parser(query) == ({"bool": {
-        "should": [{"match": {"service.metadata.base.categories": "weather"}},
-                   {"match": {"service.metadata.base.categories": "other"}}]}}, None)
+        "should": [{"match": {"service.attributes.additionalInformation.categories": "weather"}},
+                   {"match": {"service.attributes.additionalInformation.categories": "other"}}]}}, None)
 
 
 def test_default_sort():
     es.write(ddo_sample, ddo_sample['id'])
     ddo_sample2 = ddo_sample.copy()
     ddo_sample2['id'] = 'did:op:cb36cf78d87f4ce4a784f17c2a4a694f19f3fbf05b814ac6b0b7197163888864'
-    ddo_sample2['service'][2]['metadata']['curation']['rating'] = 0.99
+    ddo_sample2['service'][2]['attributes']['curation']['rating'] = 0.99
     es.write(ddo_sample2, ddo_sample2['id'])
     search_model = QueryModel({'price': [0, 12]})
     assert es.query(search_model)[0][0]['id'] == ddo_sample2['id']
