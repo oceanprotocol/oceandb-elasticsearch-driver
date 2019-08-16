@@ -139,7 +139,7 @@ class Plugin(AbstractPlugin):
         """
         assert search_model.page >= 1, 'page value %s is invalid' % search_model.page
         query_parsed = query_parser(search_model.query)
-        self.logger.debug(f'elasticsearch::query::{query_parsed[0]}')
+        self.logger.debug(f'elasticsearch::query::{query_parsed}')
         if search_model.sort is not None:
             self._mapping_to_sort(search_model.sort.keys())
             sort = self._sort_object(search_model.sort)
@@ -148,21 +148,18 @@ class Plugin(AbstractPlugin):
         if search_model.query == {}:
             query = {'match_all': {}}
         else:
-            query = query_parsed[0]
+            query = query_parsed
 
         body = {
             'sort': sort,
             'from': (search_model.page - 1) * search_model.offset,
             'size': search_model.offset,
+            'query': query
         }
-        if query != {}:
-            body['query'] = query
-
 
         page = self.driver._es.search(
             index=self.driver._index,
-            body=body,
-            q=query_parsed[1]
+            body=body
         )
 
         object_list = []
