@@ -38,15 +38,16 @@ class Plugin(AbstractPlugin):
         """
         self.logger.debug('elasticsearch::write::{}'.format(resource_id))
         if resource_id is not None:
-            if self.driver._es.exists(
-                    index=self.driver._index,
+            if self.driver.es.exists(
+                    index=self.driver.db_index,
                     id=resource_id,
                     doc_type='_doc'
             ):
                 raise ValueError(
                     "Resource \"{}\" already exists, use update instead".format(resource_id))
-        return self.driver._es.index(
-            index=self.driver._index,
+
+        return self.driver.es.index(
+            index=self.driver.db_index,
             id=resource_id,
             body=obj,
             doc_type='_doc',
@@ -59,21 +60,21 @@ class Plugin(AbstractPlugin):
         :return: object value from elasticsearch.
         """
         self.logger.debug('elasticsearch::read::{}'.format(resource_id))
-        return self.driver._es.get(
-            index=self.driver._index,
+        return self.driver.es.get(
+            index=self.driver.db_index,
             id=resource_id,
             doc_type='_doc'
         )['_source']
 
     def update(self, obj, resource_id):
         """Update object in elasticsearch using the resource_id.
-        :param metadata: new metadata for the transaction.
+        :param obj: new value
         :param resource_id: id of the object to be updated.
         :return: id of the object.
         """
         self.logger.debug('elasticsearch::update::{}'.format(resource_id))
-        return self.driver._es.index(
-            index=self.driver._index,
+        return self.driver.es.index(
+            index=self.driver.db_index,
             id=resource_id,
             body=obj,
             doc_type='_doc',
@@ -86,14 +87,11 @@ class Plugin(AbstractPlugin):
         :return:
         """
         self.logger.debug('elasticsearch::delete::{}'.format(resource_id))
-        if self.driver._es.exists(
-                index=self.driver._index,
-                id=resource_id,
-                doc_type='_doc'
-        ) == False:
-            raise ValueError("Resource \"{}\" does not exists".format(resource_id))
-        return self.driver._es.delete(
-            index=self.driver._index,
+        if not self.driver.es.exists(
+                index=self.driver.db_index, id=resource_id, doc_type='_doc'):
+            raise ValueError(f"Resource {resource_id} does not exists")
+        return self.driver.es.delete(
+            index=self.driver.db_index,
             id=resource_id,
             doc_type='_doc'
         )
@@ -122,8 +120,8 @@ class Plugin(AbstractPlugin):
         if limit:
             body['size'] = limit
 
-        page = self.driver._es.search(
-            index=self.driver._index,
+        page = self.driver.es.search(
+            index=self.driver.db_index,
             body=body
         )
 
@@ -157,8 +155,8 @@ class Plugin(AbstractPlugin):
             'query': query
         }
 
-        page = self.driver._es.search(
-            index=self.driver._index,
+        page = self.driver.es.search(
+            index=self.driver.db_index,
             body=body
         )
 
@@ -178,15 +176,15 @@ class Plugin(AbstractPlugin):
             self._mapping_to_sort(search_model.sort.keys())
             sort = self._sort_object(search_model.sort)
         else:
-            sort = [{"service.metadata.curation.rating": "asc"}]
+            sort = [{"service.attributes.curation.rating": "asc"}]
         body = {
             'sort': sort,
             'from': (search_model.page - 1) * search_model.offset,
             'size': search_model.offset,
         }
 
-        page = self.driver._es.search(
-            index=self.driver._index,
+        page = self.driver.es.search(
+            index=self.driver.db_index,
             body=body,
             q=search_model.text
         )
@@ -211,19 +209,20 @@ class Plugin(AbstractPlugin):
                               }
                         }
             """ % i
-            if self.driver._es.indices.get_field_mapping(i)[self.driver._index]['mappings'] == {}:
-                self.driver._es.indices.put_mapping(index=self.driver._index, body=mapping,
-                                                    doc_type='_doc')
+            if self.driver.es.indices.get_field_mapping(i)[self.driver.db_index]['mappings'] == {}:
+                self.driver.es.indices.put_mapping(index=self.driver.db_index, body=mapping, doc_type='_doc')
 
     def _sort_object(self, sort):
         try:
             o = []
-            for i in sort.keys():
-                if self.driver._es.indices.get_field_mapping(i)[self.driver._index]['mappings'][
-                    '_doc'][i]['mapping'][i.split('.')[-1]]['type'] == 'text':
-                    o.append({i + ".keyword": ('asc' if sort.get(i) == 1 else 'desc')}, )
+            for key in sort.keys():
+                last_k = key.split('.')[-1]
+                field_mapping = self.driver.es.indices.get_field_mapping(key)
+                value = field_mapping[self.driver.db_index]['mappings']['_doc'][key]['mapping'][last_k]['type']
+                if value == 'text':
+                    o.append({key + ".keyword": ('asc' if sort.get(key) == 1 else 'desc')}, )
                 else:
-                    o.append({i: ('asc' if sort.get(i) == 1 else 'desc')}, )
+                    o.append({key: ('asc' if sort.get(key) == 1 else 'desc')}, )
             return o
         except Exception:
             raise Exception("Sort \"{}\" does not have a valid format.".format(sort))

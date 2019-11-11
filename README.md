@@ -93,7 +93,7 @@ This queries are the following:
     `query:{"price":[0,10]}`
     
     It is transformed to:
-    `{"service.metadata.base.price":{"$gt": 0, "$lt": 10}}`
+    `{"service.attributes.main.price":{"$gt": 0, "$lt": 10}}`
         
 - license
     

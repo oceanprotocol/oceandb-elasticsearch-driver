@@ -151,8 +151,17 @@ mapping = '''
                   }
                 }
               },
-              "metadata": {
+              "attributes": {
                 "properties": {
+                  "encryptedFiles": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
                   "additionalInformation": {
                     "properties": {
                       "structuredMarkup": {
@@ -177,15 +186,6 @@ mapping = '''
                           }
                         }
                       },
-                      "updateFrecuency": {
-                        "type": "text",
-                        "fields": {
-                          "keyword": {
-                            "type": "keyword",
-                            "ignore_above": 256
-                          }
-                        }
-                      },
                       "updateFrequency": {
                         "type": "text",
                         "fields": {
@@ -194,12 +194,48 @@ mapping = '''
                             "ignore_above": 256
                           }
                         }
-                      }
-                    }
-                  },
-                  "base": {
-                    "properties": {
-                      "author": {
+                      },
+                      "links": {
+                        "properties": {
+                          "name": {
+                            "type": "text",
+                            "fields": {
+                              "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                              }
+                            }
+                          },
+                          "type": {
+                            "type": "text",
+                            "fields": {
+                              "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                              }
+                            }
+                          },
+                          "url": {
+                            "type": "text",
+                            "fields": {
+                              "keyword": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "inLanguage": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "tags": {
                         "type": "text",
                         "fields": {
                           "keyword": {
@@ -217,7 +253,7 @@ mapping = '''
                           }
                         }
                       },
-                      "checksum": {
+                      "copyrightHolder": {
                         "type": "text",
                         "fields": {
                           "keyword": {
@@ -226,7 +262,29 @@ mapping = '''
                           }
                         }
                       },
-                      "copyrightHolder": {
+                      "description": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      },
+                      "workExample": {
+                        "type": "text",
+                        "fields": {
+                          "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "main": {
+                    "properties": {
+                      "author": {
                         "type": "text",
                         "fields": {
                           "keyword": {
@@ -240,24 +298,6 @@ mapping = '''
                       },
                       "datePublished": {
                         "type": "date"
-                      },
-                      "description": {
-                        "type": "text",
-                        "fields": {
-                          "keyword": {
-                            "type": "keyword",
-                            "ignore_above": 256
-                          }
-                        }
-                      },
-                      "encryptedFiles": {
-                        "type": "text",
-                        "fields": {
-                          "keyword": {
-                            "type": "keyword",
-                            "ignore_above": 256
-                          }
-                        }
                       },
                       "files": {
                         "properties": {
@@ -323,52 +363,12 @@ mapping = '''
                           }
                         }
                       },
-                      "inLanguage": {
-                        "type": "text",
-                        "fields": {
-                          "keyword": {
-                            "type": "keyword",
-                            "ignore_above": 256
-                          }
-                        }
-                      },
                       "license": {
                         "type": "text",
                         "fields": {
                           "keyword": {
                             "type": "keyword",
                             "ignore_above": 256
-                          }
-                        }
-                      },
-                      "links": {
-                        "properties": {
-                          "name": {
-                            "type": "text",
-                            "fields": {
-                              "keyword": {
-                                "type": "keyword",
-                                "ignore_above": 256
-                              }
-                            }
-                          },
-                          "type": {
-                            "type": "text",
-                            "fields": {
-                              "keyword": {
-                                "type": "keyword",
-                                "ignore_above": 256
-                              }
-                            }
-                          },
-                          "url": {
-                            "type": "text",
-                            "fields": {
-                              "keyword": {
-                                "type": "keyword",
-                                "ignore_above": 256
-                              }
-                            }
                           }
                         }
                       },
@@ -390,25 +390,7 @@ mapping = '''
                           }
                         }
                       },
-                      "tags": {
-                        "type": "text",
-                        "fields": {
-                          "keyword": {
-                            "type": "keyword",
-                            "ignore_above": 256
-                          }
-                        }
-                      },
                       "type": {
-                        "type": "text",
-                        "fields": {
-                          "keyword": {
-                            "type": "keyword",
-                            "ignore_above": 256
-                          }
-                        }
-                      },
-                      "workExample": {
                         "type": "text",
                         "fields": {
                           "keyword": {
@@ -435,15 +417,6 @@ mapping = '''
                 }
               },
               "name": {
-                "type": "text",
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
-              },
-              "purchaseEndpoint": {
                 "type": "text",
                 "fields": {
                   "keyword": {
@@ -670,7 +643,7 @@ mapping = '''
                   }
                 }
               },
-              "serviceDefinitionId": {
+              "index": {
                 "type": "text",
                 "fields": {
                   "keyword": {

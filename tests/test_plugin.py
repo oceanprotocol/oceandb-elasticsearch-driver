@@ -11,6 +11,18 @@ from .ddo_example import ddo_sample
 es = OceanDb('./tests/oceandb.ini').plugin
 
 
+def delete_all():
+    all = es.driver.es.search()['hits']['hits']
+    for doc in all:
+        _id = doc['_id']
+        _type = doc['_type']
+        i = doc['_index']
+        try:
+            es.driver.es.delete(i, _type, _id)
+        except Exception as e:
+            print(e)
+
+
 def test_plugin_type_is_es():
     assert es.type == 'Elasticsearch'
 
@@ -73,15 +85,16 @@ def test_plugin_list():
 
 
 def test_search_query():
+    delete_all()
     es.write(ddo_sample, ddo_sample['id'])
     search_model = QueryModel({'price': [0, 12]})
     assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
     search_model_2 = QueryModel({'license': ['CC-BY']})
     assert es.query(search_model_2)[0][0]['id'] == ddo_sample['id']
-    search_model_3 = QueryModel({'price': [0, 12], 'license': ['CC-BY']})
+    search_model_3 = QueryModel({'price': ["0", "12"], 'license': ['CC-BY']})
     assert es.query(search_model_3)[0][0]['id'] == ddo_sample['id']
     search_model_4 = QueryModel(
-        {'price': [0, 12], 'license': ['CC-BY'], 'type': ['dataset']})
+        {'price': ["0", "12"], 'license': ['CC-BY'], 'metadata_type': ['dataset']})
     assert es.query(search_model_4)[0][0]['id'] == ddo_sample['id']
     search_model_5 = QueryModel({'sample': []})
     assert es.query(search_model_5)[0][0]['id'] == ddo_sample['id']
@@ -96,7 +109,7 @@ def test_search_query():
     assert len(es.query(search_model_9)[0]) == 1
     search_model_10 = QueryModel({'text': ['Weather']})
     assert len(es.query(search_model_10)[0]) == 1
-    search_model = QueryModel({'price': [0, 12], 'text': ['Weather']})
+    search_model = QueryModel({'price': ["0", "12"], 'text': ['Weather']})
     assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
     es.delete(ddo_sample['id'])
 
@@ -137,26 +150,70 @@ def test_full_text_query_tree():
 
 
 def test_query_parser():
-    query = {'price': [0, 10]}
-    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"range": {"service.attributes.main.price": {"gte": 0, "lte": 10}}}]}}]}})
-    query = {'price': [15]}
-    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.main.price": 15}}]}}]}})
+    query = {'price': ["0", "10"]}
+    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"range": {"service.attributes.main.price": {"gte": "0", "lte": "10"}}}]}}]}})
+
+    query = {'price': ["15"]}
+    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.main.price": "15"}}]}}]}})
+
     query = {'license': ['CC-BY']}
     assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.main.license": "CC-BY"}}]}}]}})
+
+    query = {'metadata_type': ['dataset', 'algorithm']}
+    assert query_parser(query) == ({
+        "bool": {"must": [{
+            "bool": {
+                "should": [
+                    {"match": {"service.attributes.main.type": "dataset"}},
+                    {"match": {"service.attributes.main.type": "algorithm"}}
+                ]}
+        }]}
+    })
+
     query = {'type': ['Access', 'Metadata']}
-    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.main.type": "Access"}}, {"match": {"service.attributes.main.type": "Metadata"}}]}}]}})
-    query = {'price': [0, 10], 'type': ['Access', 'Metadata']}
-    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"range": {"service.attributes.main.price": {"gte": 0, "lte": 10}}}]}}, {"bool": {"should": [{"match": {"service.attributes.main.type": "Access"}}, {"match": {"service.attributes.main.type": "Metadata"}}]}}]}})
+    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.type": "Access"}}, {"match": {"service.type": "Metadata"}}]}}]}})
+
+    query = {'price': ["0", "10"], 'type': ['Access', 'Metadata']}
+    assert query_parser(query) == ({
+            "bool": {
+                "must": [
+                    {"bool": {"should": [{"range": {"service.attributes.main.price": {"gte": "0", "lte": "10"}}}]}},
+                    {"bool": {"should": [{"match": {"service.type": "Access"}}, {"match": {"service.type": "Metadata"}}]}}
+                ]
+            }
+    })
+
     query = {'license': []}
     assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": []}}]}})
+
     query = {'license': [], 'type': ['Access', 'Metadata']}
-    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": []}}, {"bool": {"should": [{"match": {"service.attributes.main.type": "Access"}}, {"match": {"service.attributes.main.type": "Metadata"}}]}}]}})
+    assert query_parser(query) == ({
+        "bool": {
+            "must": [
+                {"bool": {"should": []}},
+                {"bool": {"should": [
+                    {"match": {"service.type": "Access"}},
+                    {"match": {"service.type": "Metadata"}}]}}
+            ]}
+    })
+
     query = {'license': ['CC-BY'], 'type': ['Access', 'Metadata']}
-    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.main.license": "CC-BY"}}]}}, {"bool": {"should": [{"match": {"service.attributes.main.type": "Access"}}, {"match": {"service.attributes.main.type": "Metadata"}}]}}]}})
+    assert query_parser(query) == ({
+        "bool": {
+            "must": [
+                {"bool": {"should": [{"match": {"service.attributes.main.license": "CC-BY"}}]}},
+                {"bool": {"should": [
+                    {"match": {"service.type": "Access"}},
+                    {"match": {"service.type": "Metadata"}}]}}
+            ]}
+    })
+
     query = {'license': ['CC-BY'], 'created': ['2016-02-07T16:02:20Z', '2016-02-09T16:02:20Z']}
     assert query_parser(query)["bool"]["must"][1]["bool"]["should"][0]["range"]["created"]["gte"].year == 2016
+
     query = {'datePublished': ['2017-02-07T16:02:20Z', '2017-02-09T16:02:20Z']}
     assert query_parser(query)["bool"]["must"][0]["bool"]["should"][0]["range"]["service.attributes.main.datePublished"]["gte"].year == 2017
+
     query = {'categories': ['weather', 'other']}
     assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.additionalInformation.categories": "weather"}}, {"match": {"service.attributes.additionalInformation.categories": "other"}}]}}]}})
 
