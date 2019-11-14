@@ -87,7 +87,7 @@ def test_plugin_list():
 def test_search_query():
     delete_all()
     es.write(ddo_sample, ddo_sample['id'])
-    search_model = QueryModel({'price': [0, 12]})
+    search_model = QueryModel({'price': ["0", "12"]})
     assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
     search_model_2 = QueryModel({'license': ['CC-BY']})
     assert es.query(search_model_2)[0][0]['id'] == ddo_sample['id']
@@ -109,6 +109,13 @@ def test_search_query():
     assert len(es.query(search_model_9)[0]) == 1
     search_model_10 = QueryModel({'text': ['Weather']})
     assert len(es.query(search_model_10)[0]) == 1
+    assert len(es.query(QueryModel({'text': ['UK']}))[0]) == 1
+    assert len(es.query(QueryModel({'text': ['uk']}))[0]) == 1
+    assert len(es.query(QueryModel({'text': ['uK']}))[0]) == 1
+    assert len(es.query(QueryModel({'text': ['2015']}))[0]) == 0
+    assert len(es.query(QueryModel({'text': ['2011']}))[0]) == 1
+    assert len(es.query(QueryModel({'text': ['2011', 'uuuukkk', 'temperature']}))[0]) == 1
+
     search_model = QueryModel({'price': ["0", "12"], 'text': ['Weather']})
     assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
     es.delete(ddo_sample['id'])
