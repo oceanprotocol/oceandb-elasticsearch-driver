@@ -79,9 +79,15 @@ def create_time_query(query_must, index, value):
 
 def create_text_query(query_must, value):
     query_should = []
+    assert isinstance(value, str) or isinstance(value, (list, tuple, set)), \
+        f'Invalid type of text search term, expected str or list of str, got {type(value)}'
+
+    if not isinstance(value, (list, tuple, set)):
+        value = [value]
+
     for i in range(len(value)):
-        query_should.append({FUZZY: {indexes.name: value[i]}})
-        query_should.append({FUZZY: {indexes.description: value[i]}})
+        query_should.append({MATCH: {indexes.name: value[i]}})
+        query_should.append({MATCH: {indexes.description: value[i]}})
     query_must.append({BOOL: {SHOULD: query_should}})
     return query_must
 
