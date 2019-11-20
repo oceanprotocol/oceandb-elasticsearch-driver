@@ -96,15 +96,23 @@ class Plugin(AbstractPlugin):
             doc_type='_doc'
         )
 
+    def count(self):
+        count_result = self.driver.es.count(index=self.driver.db_index)
+        if count_result is not None and count_result['count'] > 0:
+            return count_result['count']
+
+        return 0
+
     def list(self, search_from=None, search_to=None, limit=None):
-        """List all the objects saved elasticsearch.
+        """List all the objects saved in elasticsearch
+
          :param search_from: start offset of objects to return.
          :param search_to: last offset of objects to return.
          :param limit: max number of values to be returned.
-         :return: list with transactions.
+         :return: generator with all matching documents
          """
         self.logger.debug('elasticsearch::list')
-        body = {
+        _body = {
             'sort': [
                 {"_id": "asc"},
             ],
@@ -113,22 +121,34 @@ class Plugin(AbstractPlugin):
             }
         }
 
-        if search_from:
+        count = 0
+        count_result = self.driver.es.count(index=self.driver.db_index)
+        if count_result is not None and count_result['count'] > 0:
+            count = count_result['count']
+
+        if not count:
+            return []
+
+        search_from = search_from if search_from is not None and search_from >= 0 else 0
+        search_from = min(search_from, count-1)
+        search_to = search_to if search_to is not None and search_to >= 0 else (count-1)
+        limit = search_to - search_from + 1
+        chunk_size = min(25, limit)
+
+        _body['size'] = chunk_size
+        processed = 0
+        while processed < limit:
+            body = _body.copy()
             body['from'] = search_from
-        if search_to:
-            body['size'] = search_to - search_from
-        if limit:
-            body['size'] = limit
-
-        page = self.driver.es.search(
-            index=self.driver.db_index,
-            body=body
-        )
-
-        object_list = []
-        for x in page['hits']['hits']:
-            object_list.append(x['_source'])
-        return object_list
+            result = self.driver.es.search(
+                index=self.driver.db_index,
+                body=body
+            )
+            hits = result['hits']['hits']
+            search_from += len(hits)
+            processed += len(hits)
+            for x in hits:
+                yield x['_source']
 
     def query(self, search_model: QueryModel):
         """Query elasticsearch for objects.
