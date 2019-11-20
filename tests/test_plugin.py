@@ -12,14 +12,14 @@ es = OceanDb('./tests/oceandb.ini').plugin
 
 
 def delete_all():
-    all = es.driver.es.search()['hits']['hits']
-    for doc in all:
+    result = es.driver.es.search(index=es.driver.db_index, body={'size': 1000})
+    records = result['hits']['hits']
+    for doc in records:
         _id = doc['_id']
-        _type = doc['_type']
-        i = doc['_index']
         try:
-            es.driver.es.delete(i, _type, _id)
+            es.delete(_id)
         except Exception as e:
+            es.delete(str(_id))
             print(e)
 
 
@@ -65,23 +65,22 @@ def test_update():
 
 
 def test_plugin_list():
-    es.write({"value": "test1"}, 1)
-    es.write({"value": "test2"}, 2)
-    es.write({"value": "test3"}, 3)
-    es.write({"value": "test4"}, 4)
-    es.write({"value": "test5"}, 5)
-    es.write({"value": "test6"}, 6)
-    assert len(es.list()) == 6
-    assert es.list()[0]['value'] == 'test1'
-    es.delete(1)
-    assert len(es.list(search_from=2, search_to=4)) == 2
-    assert es.list(search_from=3, search_to=5)[1]['value'] == 'test5'
-    assert es.list(search_from=1, limit=2)[0]['value'] == 'test2'
-    es.delete(2)
-    es.delete(3)
-    es.delete(4)
-    es.delete(5)
-    es.delete(6)
+    delete_all()
+    count = 35
+    for i in range(count):
+        try:
+            es.write({f"value{i}": f"test{i}"}, i)
+        except ValueError as e:
+            print(f'resource already exist: {i} <error>: {e}')
+
+    assert len(list(es.list())) == 35
+    assert list(es.list())[0]['value0'] == 'test0'
+    es.delete(0)
+    assert len(list(es.list(search_from=2, search_to=4))) == 2
+    assert list(es.list(search_from=3, search_to=5))[1]['value13'] == 'test13'
+    assert list(es.list(search_from=1, limit=2))[0]['value10'] == 'test10'
+    for i in range(0, count):
+        es.delete(i)
 
 
 def test_search_query():
