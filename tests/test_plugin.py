@@ -1,5 +1,6 @@
 #  Copyright 2018 Ocean Protocol Foundation
 #  SPDX-License-Identifier: Apache-2.0
+import time
 
 import pytest
 from oceandb_driver_interface.oceandb import OceanDb
@@ -65,20 +66,25 @@ def test_update():
 
 def test_plugin_list():
     delete_all()
-    count = 35
+    count = 27
     for i in range(count):
         try:
             es.write({f"value{i}": f"test{i}"}, i)
         except ValueError as e:
             print(f'resource already exist: {i} <error>: {e}')
 
-    assert len(list(es.list())) == 35
+    assert len(list(es.list())) == count
     assert list(es.list())[0]['value0'] == 'test0'
     es.delete(0)
-    assert len(list(es.list(search_from=2, search_to=4))) == 2
-    assert list(es.list(search_from=3, search_to=5))[1]['value13'] == 'test13'
-    assert list(es.list(search_from=1, limit=2))[0]['value10'] == 'test10'
-    for i in range(0, count):
+    time.sleep(2)
+    assert len(list(es.list())) == count-1
+    result = list(es.list(search_from=2, search_to=4))
+    assert len(result) == 3
+    result = list(es.list(search_from=3, search_to=5))
+    assert result[1]['value13'] == 'test13'
+    result = list(es.list(search_from=1, limit=2))
+    assert result[0]['value10'] == 'test10'
+    for i in range(1, count):
         es.delete(i)
 
 

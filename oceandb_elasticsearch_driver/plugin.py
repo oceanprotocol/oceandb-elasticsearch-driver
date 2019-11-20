@@ -131,7 +131,7 @@ class Plugin(AbstractPlugin):
 
         search_from = search_from if search_from is not None and search_from >= 0 else 0
         search_from = min(search_from, count-1)
-        search_to = search_to if search_to is not None and search_to >= 0 else count
+        search_to = search_to if search_to is not None and search_to >= 0 else (count-1)
         limit = search_to - search_from + 1
         chunk_size = min(25, limit)
 
