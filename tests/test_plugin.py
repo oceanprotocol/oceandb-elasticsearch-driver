@@ -19,7 +19,6 @@ def delete_all():
         try:
             es.delete(_id)
         except Exception as e:
-            es.delete(str(_id))
             print(e)
 
 
