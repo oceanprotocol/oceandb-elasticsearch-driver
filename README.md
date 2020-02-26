@@ -80,11 +80,20 @@ When you want to instantiate an Oceandb plugin you can provide the next environm
 
 ## Queries
 
-Currently we are supporting a list of queries predefined in order to improve the search:
-All this queries present a common format: 
-```query:{"name":[args]}```
+You can query the DDO using predefined fields or provide the path to the desired fields yourself.
 
-This queries are the following:
+All queries use a common format:
+```json
+{
+  "query": {
+    "field": ["value1", "value2"]
+  }
+}
+```
+
+### Querying predefined fields
+
+Predefined fields include:
 - price
     
     Could receive one or two parameters. If you only pass one assumes that your query is going to start from 0 to your value.
@@ -148,6 +157,19 @@ This queries are the following:
     Retrieve all the values that match with the text sent.
     
     `{"text":["weather"]}`
+
+### Querying custom fields
+
+You can also query the DDO by value of any field. To do that, you will need to provide the full path inside the metadata instead of just the field name.
+
+For example:
+```json
+{
+  "query": {
+    "service.attributes.additionalInformation.customField": ["customValue1", "customValue2"]
+  }
+}
+```
 
 
 ## Code style

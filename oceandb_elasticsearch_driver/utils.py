@@ -37,10 +37,11 @@ def query_parser(query):
     }
     for key, value in query.items():
         if key not in key_to_index_and_maker:
-            logger.error('The key %s is not supported by OceanDB.' % key)
-            raise Exception('The key %s is not supported by OceanDB.' % key)
+            index = key
+            query_maker = create_query
+        else:
+            index, query_maker = key_to_index_and_maker[key]
 
-        index, query_maker = key_to_index_and_maker[key]
         if index is not None:
             query_must = query_maker(query_must, index, value)
         else:

@@ -120,6 +120,9 @@ def test_search_query():
     assert len(es.query(QueryModel({'text': ['2011']}))[0]) == 1
     assert len(es.query(QueryModel({'text': ['2011', 'uuuukkk', 'temperature']}))[0]) == 1
 
+    assert len(es.query(QueryModel({'service.attributes.additionalInformation.customField': ['customValue']}))[0]) == 1
+    assert len(es.query(QueryModel({'service.attributes.additionalInformation.nonExistentField': ['customValue']}))[0]) == 0
+
     search_model = QueryModel({'price': ["0", "12"], 'text': ['Weather']})
     assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
     es.delete(ddo_sample['id'])
@@ -227,6 +230,9 @@ def test_query_parser():
 
     query = {'categories': ['weather', 'other']}
     assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.additionalInformation.categories": "weather"}}, {"match": {"service.attributes.additionalInformation.categories": "other"}}]}}]}})
+
+    query = {'service.attributes.additionalInformation.customField': ['customValue']}
+    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.additionalInformation.customField": "customValue"}}]}}]}})
 
 
 def test_default_sort():
