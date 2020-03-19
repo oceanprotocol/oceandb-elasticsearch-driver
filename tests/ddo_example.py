@@ -301,6 +301,7 @@ ddo_sample = {
                     ],
                     "inLanguage": "en",
                     "tags": "weather, uk, 2011, temperature, humidity",
+                    "customField": "customValue"
                 }
             }
         }
