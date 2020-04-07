@@ -234,7 +234,7 @@ def test_query_parser():
     query = {'service.attributes.additionalInformation.customField': ['customValue']}
     assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.additionalInformation.customField": "customValue"}}]}}]}})
 
-    query = {'service.attributes.additionalInformation.customNumber': [2, 5}
+    query = {'service.attributes.additionalInformation.customNumber': [2, 5]}
     assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"range": {"service.attributes.additionalInformation.customNumber": {"gte": 2, "lte": 5}}}]}}]}})
 
 
