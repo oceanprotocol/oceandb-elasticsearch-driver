@@ -2,7 +2,18 @@
 #  SPDX-License-Identifier: Apache-2.0
 
 mapping = '''
-{"mappings": {
+{"settings": {
+    "analysis": {
+      "normalizer": {
+        "ocean_normalizer": {
+          "type": "custom",
+          "char_filter": [],
+          "filter": ["lowercase", "asciifolding"]
+        }
+      }
+    }
+  },
+  "mappings": {
       "_doc": {
         "properties": {
           "@context": {
@@ -240,7 +251,8 @@ mapping = '''
                         "fields": {
                           "keyword": {
                             "type": "keyword",
-                            "ignore_above": 256
+                            "ignore_above": 256,
+                            "normalizer": "ocean_normalizer"
                           }
                         }
                       },
@@ -249,7 +261,8 @@ mapping = '''
                         "fields": {
                           "keyword": {
                             "type": "keyword",
-                            "ignore_above": 256
+                            "ignore_above": 256,
+                            "normalizer": "ocean_normalizer"
                           }
                         }
                       },
@@ -267,7 +280,8 @@ mapping = '''
                         "fields": {
                           "keyword": {
                             "type": "keyword",
-                            "ignore_above": 256
+                            "ignore_above": 256,
+                            "normalizer": "ocean_normalizer"
                           }
                         }
                       },
@@ -377,7 +391,8 @@ mapping = '''
                         "fields": {
                           "keyword": {
                             "type": "keyword",
-                            "ignore_above": 256
+                            "ignore_above": 256,
+                            "normalizer": "ocean_normalizer"
                           }
                         }
                       },
