@@ -158,7 +158,7 @@ Predefined fields include:
     
     `{"text":["weather"]}`
 
-### Querying custom fields
+### Querying custom fields as texts
 
 You can also query the DDO by value of any field. To do that, you will need to provide the full path inside the metadata instead of just the field name.
 
@@ -171,6 +171,34 @@ For example:
 }
 ```
 
+### Querying custom fields as intervals
+
+To do that, you will need to provide the full path inside the metadata instead of just the field name, and values as integers or floats
+
+For example:
+```json
+{
+  "query": {
+    "service.attributes.additionalInformation.customNumber": [3, 6]
+  }
+}
+```
+which is translated to:
+```json
+{
+    "bool": 
+    {
+        "must": [
+            {"bool":
+                {"should": [
+                    {"range": {"service.attributes.additionalInformation.customNumber": {"gte": 3, "lte": 6}}}
+                ]
+                }
+            }
+        ]
+    }
+}
+```
 
 ## Code style
 
