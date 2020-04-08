@@ -33,12 +33,15 @@ def query_parser(query):
         'created': (indexes.created, create_time_query),
         'dateCreated': (indexes.dateCreated, create_time_query),
         'datePublished': (indexes.datePublished, create_time_query),
-        'price': (None, create_price_query)
+        'price': (indexes.price, create_number_query)
     }
     for key, value in query.items():
         if key not in key_to_index_and_maker:
             index = key
-            query_maker = create_query
+            if isinstance(value[0], int) or isinstance(value[0], float):
+                query_maker = create_number_query
+            else:
+                query_maker = create_query
         else:
             index, query_maker = key_to_index_and_maker[key]
 
@@ -101,7 +104,7 @@ def create_query(query_must, index, value):
     return query_must
 
 
-def create_price_query(query_must, value):
+def create_number_query(query_must, index, value):
     query_should = []
     if len(value) > 2:
         logger.info('You are sending more values than needed.')
@@ -110,13 +113,13 @@ def create_price_query(query_must, value):
     elif len(value) == 1:
         query_should.append({
             MATCH: {
-                indexes.price: value[0]
+                index: value[0]
             }
         })
     else:
         query_should.append({
             RANGE: {
-                indexes.price: {
+                index: {
                     GTE: value[0],
                     LTE: value[1]
                 }
