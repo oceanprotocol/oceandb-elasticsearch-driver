@@ -125,6 +125,10 @@ def test_search_query():
 
     search_model = QueryModel({'price': ["0", "12"], 'text': ['Weather']})
     assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
+
+    search_model_dtAddress = QueryModel({'dtAddress': ['0x2eD6d94Ec5Af12C43B924572F9aFFe470DC83282']})
+    assert len(es.query(search_model_dtAddress)[0]) == 1
+
     es.delete(ddo_sample['id'])
 
 

@@ -50,6 +50,15 @@ mapping = '''
           "created": {
             "type": "date"
           },
+          "dtAddress": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
           "id": {
             "type": "text",
             "fields": {

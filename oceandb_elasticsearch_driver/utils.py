@@ -31,6 +31,7 @@ def query_parser(query):
         'updateFrequency': (indexes.updated_frequency, create_query),
         'sample': (indexes.sample, create_query),
         'created': (indexes.created, create_time_query),
+        'dtAddress': (indexes.dtAddress, create_query),
         'dateCreated': (indexes.dateCreated, create_time_query),
         'datePublished': (indexes.datePublished, create_time_query),
         'price': (indexes.price, create_number_query)
