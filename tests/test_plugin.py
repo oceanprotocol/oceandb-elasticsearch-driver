@@ -1,7 +1,6 @@
 #  Copyright 2018 Ocean Protocol Foundation
 #  SPDX-License-Identifier: Apache-2.0
 import time
-import json
 import pytest
 from oceandb_driver_interface.oceandb import OceanDb
 from oceandb_driver_interface.search_model import FullTextModel, QueryModel
