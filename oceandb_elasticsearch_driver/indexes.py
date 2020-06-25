@@ -7,7 +7,7 @@ sample = "service.attributes.additionalInformation.links.type"
 categories = "service.attributes.additionalInformation.categories"
 tags = "service.attributes.additionalInformation.tags"
 created = "created"
-dtAddress = "dtAddress"
+DataToken = "DataToken"
 datePublished = "service.attributes.main.datePublished"
 dateCreated = "service.attributes.main.dateCreated"
 updated_frequency = "service.attributes.additionalInformation.updateFrequency"
@@ -16,5 +16,5 @@ metadata_type = "service.attributes.main.type"
 name = "service.attributes.main.name"
 description = "service.attributes.additionalInformation.description"
 
-list_indexes = [price, license, sample, categories, created, dtAddress, updated_frequency,
+list_indexes = [price, license, sample, categories, created, DataToken, updated_frequency,
                 service_type, metadata_type, name, description]
