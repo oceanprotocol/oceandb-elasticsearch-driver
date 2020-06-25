@@ -1,7 +1,7 @@
 #  Copyright 2018 Ocean Protocol Foundation
 #  SPDX-License-Identifier: Apache-2.0
 
-price = "service.attributes.main.price"
+cost = "service.attributes.main.cost"
 license = "service.attributes.main.license"
 sample = "service.attributes.additionalInformation.links.type"
 categories = "service.attributes.additionalInformation.categories"
@@ -16,5 +16,5 @@ metadata_type = "service.attributes.main.type"
 name = "service.attributes.main.name"
 description = "service.attributes.additionalInformation.description"
 
-list_indexes = [price, license, sample, categories, created, DataToken, updated_frequency,
+list_indexes = [cost, license, sample, categories, created, DataToken, updated_frequency,
                 service_type, metadata_type, name, description]

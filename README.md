@@ -94,15 +94,15 @@ All queries use a common format:
 ### Querying predefined fields
 
 Predefined fields include:
-- price
+- cost
     
     Could receive one or two parameters. If you only pass one assumes that your query is going to start from 0 to your value.
         
     Next query:
-    `query:{"price":[0,10]}`
+    `query:{"cost":[0,10]}`
     
     It is transformed to:
-    `{"service.attributes.main.price":{"$gt": 0, "$lt": 10}}`
+    `{"service.attributes.main.cost":{"$gt": 0, "$lt": 10}}`
         
 - license
     

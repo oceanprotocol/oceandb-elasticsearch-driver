@@ -91,14 +91,14 @@ def test_plugin_list():
 def test_search_query():
     delete_all()
     es.write(ddo_sample, ddo_sample['id'])
-    search_model = QueryModel({'price': ["0", "12"]})
+    search_model = QueryModel({'cost': ["0", "12"]})
     assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
     search_model_2 = QueryModel({'license': ['CC-BY']})
     assert es.query(search_model_2)[0][0]['id'] == ddo_sample['id']
-    search_model_3 = QueryModel({'price': ["0", "12"], 'license': ['CC-BY']})
+    search_model_3 = QueryModel({'cost': ["0", "12"], 'license': ['CC-BY']})
     assert es.query(search_model_3)[0][0]['id'] == ddo_sample['id']
     search_model_4 = QueryModel(
-        {'price': ["0", "12"], 'license': ['CC-BY'], 'metadata_type': ['dataset']})
+        {'cost': ["0", "12"], 'license': ['CC-BY'], 'metadata_type': ['dataset']})
     assert es.query(search_model_4)[0][0]['id'] == ddo_sample['id']
     search_model_5 = QueryModel({'sample': []})
     assert es.query(search_model_5)[0][0]['id'] == ddo_sample['id']
@@ -123,11 +123,11 @@ def test_search_query():
     assert len(es.query(QueryModel({'service.attributes.additionalInformation.customField': ['customValue']}))[0]) == 1
     assert len(es.query(QueryModel({'service.attributes.additionalInformation.nonExistentField': ['customValue']}))[0]) == 0
 
-    search_model = QueryModel({'price': ["0", "12"], 'text': ['Weather']})
+    search_model = QueryModel({'cost': ["0", "12"], 'text': ['Weather']})
     assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
 
     search_model_DataToken = QueryModel({'DataToken': ['0x2eD6d94Ec5Af12C43B924572F9aFFe470DC83282']})
-    assert len(es.query(DataToken)[0]) == 1
+    assert len(es.query(search_model_DataToken)[0]) == 1
 
     es.delete(ddo_sample['id'])
 
@@ -168,11 +168,11 @@ def test_full_text_query_tree():
 
 
 def test_query_parser():
-    query = {'price': ["0", "10"]}
-    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"range": {"service.attributes.main.price": {"gte": "0", "lte": "10"}}}]}}]}})
+    query = {'cost': ["0", "100"]}
+    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"range": {"service.attributes.main.cost": {"gte": "0", "lte": "10"}}}]}}]}})
 
-    query = {'price': ["15"]}
-    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.main.price": "15"}}]}}]}})
+    query = {'cost': ["15"]}
+    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.main.cost": "15"}}]}}]}})
 
     query = {'license': ['CC-BY']}
     assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.main.license": "CC-BY"}}]}}]}})
@@ -191,11 +191,11 @@ def test_query_parser():
     query = {'type': ['Access', 'Metadata']}
     assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.type": "Access"}}, {"match": {"service.type": "Metadata"}}]}}]}})
 
-    query = {'price': ["0", "10"], 'type': ['Access', 'Metadata']}
+    query = {'cost': ["0", "10"], 'type': ['Access', 'Metadata']}
     assert query_parser(query) == ({
             "bool": {
                 "must": [
-                    {"bool": {"should": [{"range": {"service.attributes.main.price": {"gte": "0", "lte": "10"}}}]}},
+                    {"bool": {"should": [{"range": {"service.attributes.main.cost": {"gte": "0", "lte": "10"}}}]}},
                     {"bool": {"should": [{"match": {"service.type": "Access"}}, {"match": {"service.type": "Metadata"}}]}}
                 ]
             }
@@ -248,7 +248,7 @@ def test_default_sort():
     ddo_sample2['id'] = 'did:op:cb36cf78d87f4ce4a784f17c2a4a694f19f3fbf05b814ac6b0b7197163888864'
     ddo_sample2['service'][2]['attributes']['curation']['rating'] = 0.99
     es.write(ddo_sample2, ddo_sample2['id'])
-    search_model = QueryModel({'price': [0, 12]})
+    search_model = QueryModel({'cost': [0, 12]})
     assert es.query(search_model)[0][0]['id'] == ddo_sample2['id']
     es.delete(ddo_sample['id'])
     es.delete(ddo_sample2['id'])

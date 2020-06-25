@@ -405,7 +405,7 @@ mapping = '''
                           }
                         }
                       },
-                      "price": {
+                      "cost": {
                         "type": "text",
                         "fields": {
                           "keyword": {

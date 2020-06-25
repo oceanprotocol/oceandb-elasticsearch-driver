@@ -34,7 +34,7 @@ def query_parser(query):
         'DataToken': (indexes.DataToken, create_query),
         'dateCreated': (indexes.dateCreated, create_time_query),
         'datePublished': (indexes.datePublished, create_time_query),
-        'price': (indexes.price, create_number_query)
+        'cost': (indexes.cost, create_number_query)
     }
     for key, value in query.items():
         if key not in key_to_index_and_maker:
