@@ -54,7 +54,7 @@ ddo_sample = {
                                "=0x00bd138abd70e2f00903268f3db08f2d25677c9e&agreementId"
                                "=0xeb4bb084942044a3857a5d107b48563a1ab56608c79342319697710336484fca&url=0",
             "main": {
-                "cost": "10",
+                "cost": 10,
                 "timeout": 0
             }
         },
@@ -63,7 +63,7 @@ ddo_sample = {
             "serviceEndpoint": "http://mybrizo.org/api/v1/brizo/services/compute?pubKey=${"
                                "pubKey}&agreementId={agreementId}&algo={algo}&container={container}",
             "main": {
-                "cost": "5",
+                "cost": 5,
                 "timeout": 3600
             }
         },
