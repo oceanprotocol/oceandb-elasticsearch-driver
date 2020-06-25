@@ -31,9 +31,10 @@ def query_parser(query):
         'updateFrequency': (indexes.updated_frequency, create_query),
         'sample': (indexes.sample, create_query),
         'created': (indexes.created, create_time_query),
+        'dataToken': (indexes.dataToken, create_query),
         'dateCreated': (indexes.dateCreated, create_time_query),
         'datePublished': (indexes.datePublished, create_time_query),
-        'price': (indexes.price, create_number_query)
+        'cost': (indexes.cost, create_number_query)
     }
     for key, value in query.items():
         if key not in key_to_index_and_maker:
@@ -130,4 +131,5 @@ def create_number_query(query_must, index, value):
             SHOULD: query_should
         }
     })
+    print(query_must)
     return query_must

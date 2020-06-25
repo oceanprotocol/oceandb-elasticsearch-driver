@@ -50,6 +50,15 @@ mapping = '''
           "created": {
             "type": "date"
           },
+          "dataToken": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
           "id": {
             "type": "text",
             "fields": {
@@ -396,7 +405,7 @@ mapping = '''
                           }
                         }
                       },
-                      "price": {
+                      "cost": {
                         "type": "text",
                         "fields": {
                           "keyword": {
