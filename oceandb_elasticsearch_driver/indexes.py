@@ -1,7 +1,7 @@
 #  Copyright 2018 Ocean Protocol Foundation
 #  SPDX-License-Identifier: Apache-2.0
 
-cost = "service.attributes.main.cost"
+cost = "service.main.cost"
 license = "service.attributes.main.license"
 sample = "service.attributes.additionalInformation.links.type"
 categories = "service.attributes.additionalInformation.categories"

@@ -1,7 +1,7 @@
 #  Copyright 2018 Ocean Protocol Foundation
 #  SPDX-License-Identifier: Apache-2.0
 import time
-
+import json
 import pytest
 from oceandb_driver_interface.oceandb import OceanDb
 from oceandb_driver_interface.search_model import FullTextModel, QueryModel
@@ -92,6 +92,9 @@ def test_search_query():
     delete_all()
     es.write(ddo_sample, ddo_sample['id'])
     search_model = QueryModel({'cost': ["0", "12"]})
+    print(json.dumps(search_model.query))
+    x = es.query(search_model)
+    print(json.dumps(x))
     assert es.query(search_model)[0][0]['id'] == ddo_sample['id']
     search_model_2 = QueryModel({'license': ['CC-BY']})
     assert es.query(search_model_2)[0][0]['id'] == ddo_sample['id']
@@ -169,10 +172,10 @@ def test_full_text_query_tree():
 
 def test_query_parser():
     query = {'cost': ["0", "100"]}
-    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"range": {"service.attributes.main.cost": {"gte": "0", "lte": "10"}}}]}}]}})
+    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"range": {"service.main.cost": {"gte": "0", "lte": "10"}}}]}}]}})
 
     query = {'cost': ["15"]}
-    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.main.cost": "15"}}]}}]}})
+    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.main.cost": "15"}}]}}]}})
 
     query = {'license': ['CC-BY']}
     assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.main.license": "CC-BY"}}]}}]}})
@@ -195,7 +198,7 @@ def test_query_parser():
     assert query_parser(query) == ({
             "bool": {
                 "must": [
-                    {"bool": {"should": [{"range": {"service.attributes.main.cost": {"gte": "0", "lte": "10"}}}]}},
+                    {"bool": {"should": [{"range": {"service.main.cost": {"gte": "0", "lte": "10"}}}]}},
                     {"bool": {"should": [{"match": {"service.type": "Access"}}, {"match": {"service.type": "Metadata"}}]}}
                 ]
             }
