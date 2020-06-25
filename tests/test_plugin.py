@@ -168,10 +168,10 @@ def test_full_text_query_tree():
 
 def test_query_parser():
     query = {'cost': ["0", "100"]}
-    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"range": {"service.main.cost": {"gte": "0", "lte": "100"}}}]}}]}})
+    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"range": {"service.attributes.main.cost": {"gte": "0", "lte": "100"}}}]}}]}})
 
     query = {'cost': ["15"]}
-    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.main.cost": "15"}}]}}]}})
+    assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.main.cost": "15"}}]}}]}})
 
     query = {'license': ['CC-BY']}
     assert query_parser(query) == ({"bool": {"must": [{"bool": {"should": [{"match": {"service.attributes.main.license": "CC-BY"}}]}}]}})
@@ -194,7 +194,7 @@ def test_query_parser():
     assert query_parser(query) == ({
             "bool": {
                 "must": [
-                    {"bool": {"should": [{"range": {"service.main.cost": {"gte": "0", "lte": "10"}}}]}},
+                    {"bool": {"should": [{"range": {"service.attributes.main.cost": {"gte": "0", "lte": "10"}}}]}},
                     {"bool": {"should": [{"match": {"service.type": "Access"}}, {"match": {"service.type": "Metadata"}}]}}
                 ]
             }
