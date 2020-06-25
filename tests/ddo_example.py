@@ -6,7 +6,7 @@ from datetime import datetime
 ddo_sample = {
     "@context": "https://w3id.org/future-method/v1",
     "id": "did:op:cb36cf78d87f4ce4a784f17c2a4a694f19f3fbf05b814ac6b0b7197163888865",
-    "DataToken": "0x2eD6d94Ec5Af12C43B924572F9aFFe470DC83282",
+    "dataToken": "0x2eD6d94Ec5Af12C43B924572F9aFFe470DC83282",
     "created": datetime.strptime("2016-02-08T16:02:20Z", '%Y-%m-%dT%H:%M:%SZ'),
     "publicKey": [
         {

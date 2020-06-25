@@ -50,7 +50,7 @@ mapping = '''
           "created": {
             "type": "date"
           },
-          "DataToken": {
+          "dataToken": {
             "type": "text",
             "fields": {
               "keyword": {
