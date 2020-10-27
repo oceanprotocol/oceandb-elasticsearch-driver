@@ -81,6 +81,14 @@ class Plugin(AbstractPlugin):
             refresh='wait_for'
         )['_id']
 
+    def delete_all(self):
+        q = '''{
+            "query" : {
+                "match_all" : {}
+            }
+        }'''
+        self.driver.es.delete_by_query('_all', q)
+
     def delete(self, resource_id):
         """Delete an object from elasticsearch.
         :param resource_id: id of the object to be deleted.
@@ -137,18 +145,25 @@ class Plugin(AbstractPlugin):
 
         _body['size'] = chunk_size
         processed = 0
-        while processed < limit:
-            body = _body.copy()
-            body['from'] = search_from
-            result = self.driver.es.search(
-                index=self.driver.db_index,
-                body=body
-            )
+        body = _body.copy()
+        body['from'] = search_from
+        result = self.driver.es.search(
+            index=self.driver.db_index,
+            body=body,
+            scroll='1m'
+        )
+        while processed < limit and result:
             hits = result['hits']['hits']
+            if not hits:
+                break
+
             search_from += len(hits)
             processed += len(hits)
             for x in hits:
                 yield x['_source']
+
+            scroll = result['_scroll_id']
+            result = self.driver.es.scroll(scroll_id=scroll, scroll='1m')
 
     def query(self, search_model: QueryModel):
         """Query elasticsearch for objects.
