@@ -145,25 +145,18 @@ class Plugin(AbstractPlugin):
 
         _body['size'] = chunk_size
         processed = 0
-        body = _body.copy()
-        body['from'] = search_from
-        result = self.driver.es.search(
-            index=self.driver.db_index,
-            body=body,
-            scroll='1m'
-        )
-        while processed < limit and result:
+        while processed < limit:
+            body = _body.copy()
+            body['from'] = search_from
+            result = self.driver.es.search(
+                index=self.driver.db_index,
+                body=body
+            )
             hits = result['hits']['hits']
-            if not hits:
-                break
-
             search_from += len(hits)
             processed += len(hits)
             for x in hits:
                 yield x['_source']
-
-            scroll = result['_scroll_id']
-            result = self.driver.es.scroll(scroll_id=scroll, scroll='1m')
 
     def query(self, search_model: QueryModel):
         """Query elasticsearch for objects.
