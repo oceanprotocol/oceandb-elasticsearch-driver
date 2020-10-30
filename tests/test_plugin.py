@@ -149,6 +149,16 @@ def test_full_text_query():
 
 
 def test_full_text_query_tree():
+
+    def delete_ids(ids, mult=1):
+        for i in ids:
+            try:
+                es.delete(i*mult)
+            except Exception:
+                pass
+    delete_ids(range(1, 7))
+    delete_ids(range(1, 8), 10)
+
     es.write({"father": {"son": "test1"}}, 1)
     es.write({"father": {"son": "test2"}}, 2)
     es.write({"father": {"son": "test3"}}, 3)
@@ -156,14 +166,32 @@ def test_full_text_query_tree():
     es.write({"father": {"son": "foo5"}}, 5)
     es.write({"father": {"son": "test6"}}, 6)
     search_model = FullTextModel('foo?', {'father.son': -1}, offset=6, page=1)
-    assert len(es.text_query(search_model)) == 2
-    assert es.text_query(search_model)[0][0]['father']['son'] == 'foo5'
-    es.delete(1)
-    es.delete(2)
-    es.delete(3)
-    es.delete(4)
-    es.delete(5)
-    es.delete(6)
+    results = es.text_query(search_model)[0]
+    assert len(results) == 2
+    assert results[0]['father']['son'] == 'foo5'
+
+    # test sorting by numbers
+    es.write({"price": {"value": 1, "ocean": 2.3, "pool": "0x1"}}, 10)
+    es.write({"price": {"value": 2, "ocean": 2.3, "pool": "0x2"}}, 20)
+    es.write({"price": {"value": 3, "ocean": 2.3, "pool": "0x3"}}, 30)
+    es.write({"price": {"value": 11, "ocean": 2.3, "pool": "0x11"}}, 40)
+    es.write({"price": {"value": 12, "ocean": 2.3, "pool": "0x12"}}, 50)
+    es.write({"price": {"value": 13, "ocean": 2.3, "pool": "0x13"}}, 60)
+    es.write({"price": {"value": 4, "ocean": 2.3, "pool": "0x4"}}, 70)
+    search_model = FullTextModel('0x*', {'price.value': 1})  # ascending
+    results = es.text_query(search_model)[0]
+    assert len(results) == 7, ''
+    values = [r["price"]["value"] for r in results]
+    assert values == [1, 2, 3, 4, 11, 12, 13]
+
+    search_model = FullTextModel('0x*', {'price.pool': 1})
+    results = es.text_query(search_model)[0]
+    assert len(results) == 7, ''
+    pools = [r["price"]["pool"] for r in results]
+    assert pools == ["0x1", "0x11", "0x12", "0x13", "0x2", "0x3", "0x4"]
+
+    delete_ids(range(1, 7))
+    delete_ids(range(1, 8), 10)
 
 
 def test_query_parser():

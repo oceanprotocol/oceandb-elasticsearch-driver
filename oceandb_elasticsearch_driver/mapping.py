@@ -25,6 +25,34 @@ mapping = '''
               }
             }
           },
+          "price": {
+            "properties": {
+              "datatoken": {
+                "type": "double",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "ocean": {
+                "type": "double",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "value": {
+                "type": "double",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            }
+          },
           "authentication": {
             "properties": {
               "publicKey": {

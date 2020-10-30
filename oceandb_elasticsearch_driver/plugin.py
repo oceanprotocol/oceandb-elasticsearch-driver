@@ -81,6 +81,14 @@ class Plugin(AbstractPlugin):
             refresh='wait_for'
         )['_id']
 
+    def delete_all(self):
+        q = '''{
+            "query" : {
+                "match_all" : {}
+            }
+        }'''
+        self.driver.es.delete_by_query('_all', q)
+
     def delete(self, resource_id):
         """Delete an object from elasticsearch.
         :param resource_id: id of the object to be deleted.
