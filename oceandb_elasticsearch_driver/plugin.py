@@ -158,12 +158,20 @@ class Plugin(AbstractPlugin):
             for x in hits:
                 yield x['_source']
 
-    def query(self, search_model: QueryModel):
+    def query(self, search_model: [QueryModel, FullTextModel]):
         """Query elasticsearch for objects.
         :param search_model: object of QueryModel.
         :return: list of objects that match the query.
         """
         assert search_model.page >= 1, 'page value %s is invalid' % search_model.page
+        if isinstance(search_model, FullTextModel):
+            return self.text_query(search_model)
+
+        text = None
+        query = search_model.query
+        if 'text' in query:
+            text = query.pop('text')
+
         query_parsed = query_parser(search_model.query)
         self.logger.debug(f'elasticsearch::query::{query_parsed}')
         if search_model.sort is not None:
@@ -171,6 +179,8 @@ class Plugin(AbstractPlugin):
             sort = self._sort_object(search_model.sort)
         else:
             sort = [{"_id": "asc"}]
+
+        sort = [{"_score": "desc"}] + sort
         if search_model.query == {}:
             query = {'match_all': {}}
         else:
@@ -185,7 +195,8 @@ class Plugin(AbstractPlugin):
 
         page = self.driver.es.search(
             index=self.driver.db_index,
-            body=body
+            body=body,
+            q=text
         )
 
         object_list = []
