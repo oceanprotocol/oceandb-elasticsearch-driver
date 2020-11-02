@@ -180,7 +180,12 @@ class Plugin(AbstractPlugin):
         else:
             sort = [{"_id": "asc"}]
 
-        sort = [{"_score": "desc"}] + sort
+        if text:
+            sort = [{"_score": "desc"}] + sort
+            text = text.strip()
+            if 'did:op:' in text:
+                text = text.replace('did:op:', '0x')
+
         if search_model.query == {}:
             query = {'match_all': {}}
         else:
@@ -196,7 +201,7 @@ class Plugin(AbstractPlugin):
         page = self.driver.es.search(
             index=self.driver.db_index,
             body=body,
-            q=text
+            q=text or None
         )
 
         object_list = []
