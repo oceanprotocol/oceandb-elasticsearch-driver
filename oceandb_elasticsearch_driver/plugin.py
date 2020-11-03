@@ -182,9 +182,10 @@ class Plugin(AbstractPlugin):
 
         if text:
             sort = [{"_score": "desc"}] + sort
-            text = text.strip()
-            if 'did:op:' in text:
-                text = text.replace('did:op:', '0x')
+            if isinstance(text, str):
+                text = [text]
+            text = [t.strip() for t in text]
+            text = [t.replace('did:op:', '0x') for t in text if t]
 
         if search_model.query == {}:
             query = {'match_all': {}}
