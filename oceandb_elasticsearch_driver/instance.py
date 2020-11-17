@@ -43,7 +43,7 @@ class ElasticsearchInstance(object):
                 ca_certs=ca_certs,
                 client_cert=client_key,
                 client_key=client_cert,
-                maxsize=1000,
+                maxsize=1000
             )
             while self._es.ping() is False:
                 logging.info("Trying to connect...")
