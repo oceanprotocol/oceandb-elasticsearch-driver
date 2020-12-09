@@ -111,12 +111,13 @@ class Plugin(AbstractPlugin):
 
         return 0
 
-    def list(self, search_from=None, search_to=None, limit=None):
+    def list(self, search_from=None, search_to=None, limit=None, chunk_size=100):
         """List all the objects saved in elasticsearch
 
          :param search_from: start offset of objects to return.
          :param search_to: last offset of objects to return.
          :param limit: max number of values to be returned.
+         :param chunk_size: int size of each batch of objects
          :return: generator with all matching documents
          """
         self.logger.debug('elasticsearch::list')
@@ -141,7 +142,7 @@ class Plugin(AbstractPlugin):
         search_from = min(search_from, count-1)
         search_to = search_to if search_to is not None and search_to >= 0 else (count-1)
         limit = search_to - search_from + 1
-        chunk_size = min(25, limit)
+        chunk_size = min(chunk_size, limit)
 
         _body['size'] = chunk_size
         processed = 0
