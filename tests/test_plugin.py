@@ -279,3 +279,10 @@ def test_default_sort():
     assert es.query(search_model)[0][0]['id'] == ddo_sample2['id']
     es.delete(ddo_sample['id'])
     es.delete(ddo_sample2['id'])
+
+
+def test_read_new():
+    es.write(ddo_sample, ddo_sample['id'])
+    assert es.read(ddo_sample['id'])['id'] == ddo_sample['id']
+    assert es.read('did:op:CB36CF78D87F4CE4A784F17C2A4A694F19F3FBF05B814AC6B0B7197163888865')['id'] == ddo_sample['id']
+    es.delete(ddo_sample['id'])

@@ -62,7 +62,7 @@ class Plugin(AbstractPlugin):
         self.logger.debug('elasticsearch::read::{}'.format(resource_id))
         return self.driver.es.get(
             index=self.driver.db_index,
-            id=resource_id,
+            id=resource_id.lower(),
             doc_type='_doc'
         )['_source']
 
@@ -244,10 +244,10 @@ class Plugin(AbstractPlugin):
         for i in keys:
             mapping = """{
                               "properties": {
-                                "%s" : { 
+                                "%s" : {
                                   "type": "text",
                                   "fields": {
-                                    "keyword": { 
+                                    "keyword": {
                                       "type": "keyword"
                                     }
                                   }
