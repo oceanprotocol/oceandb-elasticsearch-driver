@@ -150,7 +150,8 @@ mapping = '''
           }
         },
         "id": {
-          "type": "keyword"
+          "type": "keyword",
+          "normalizer": "ocean_normalizer"
         },
         "proof": {
           "properties": {
