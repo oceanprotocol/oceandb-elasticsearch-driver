@@ -153,6 +153,9 @@ mapping = '''
           "type": "keyword",
           "normalizer": "ocean_normalizer"
         },
+        "_score": {
+          "type": "keyword"
+        },
         "proof": {
           "properties": {
             "created": {
