@@ -45,7 +45,14 @@ mapping = '''
               }
             },
             "symbol": {
-              "type": "keyword"
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256,
+                  "normalizer": "ocean_normalizer"
+                }
+              }
             },
             "decimals": {
               "type": "integer",
